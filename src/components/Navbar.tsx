@@ -37,13 +37,13 @@ const Navbar: React.FC = () => {
   const navigationItems = [
     { name: t("common.dashboard"), href: "/dashboard", icon: LayoutDashboard },
     { name: t("common.products"), href: "/dashboard/products", icon: Package },
+    { name: t("common.referrals"), href: "/dashboard/referrals", icon: Users },
+    { name: t("common.plans"), href: "/dashboard/plans", icon: CreditCard },
     {
       name: t("common.earnings"),
       href: "/dashboard/earnings",
       icon: DollarSign,
     },
-    { name: t("common.referrals"), href: "/dashboard/referrals", icon: Users },
-    { name: t("common.plans"), href: "/dashboard/plans", icon: CreditCard },
     { name: t("common.withdraw"), href: "/dashboard/withdraw", icon: Wallet },
   ];
 

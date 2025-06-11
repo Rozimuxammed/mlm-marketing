@@ -1,154 +1,160 @@
-import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { DollarSign, TrendingUp, Calendar, Filter } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
-import StatCard from '../components/StatCard';
+import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
+import {
+  DollarSign,
+  TrendingUp,
+  Calendar,
+  Filter,
+  Download,
+  Upload,
+} from "lucide-react";
+import StatCard from "../components/StatCard";
 
 const EarningsPage: React.FC = () => {
   const { t } = useTranslation();
-  const { user } = useAuth();
-  const [selectedPeriod, setSelectedPeriod] = useState('all');
+  const [balance, setBalance] = useState(0); // Balans holati
+  const [coinAmount, setCoinAmount] = useState(""); // Coin miqdori
+  const [currency, setCurrency] = useState("So'm"); // Valyuta tanlash
+  const [withdrawalHistory] = useState([
+    {
+      id: 1,
+      amount: 500,
+      currency: "UZS",
+      date: "May 1, 2023, 07:30 PM",
+      status: "Tasdiqlangan",
+      maskedCard: "****4242",
+    },
+    {
+      id: 2,
+      amount: 300,
+      currency: "UZS",
+      date: "May 15, 2023, 02:15 PM",
+      status: "Kutilmoqda",
+      maskedCard: "****4444",
+    },
+    {
+      id: 3,
+      amount: 700,
+      currency: "UZS",
+      date: "May 20, 2023, 03:45 PM",
+      status: "Tasdiqlangan",
+      maskedCard: "****4242",
+    },
+  ]);
 
-  const earningsHistory = [
-    { id: 1, date: '2024-01-15', amount: 125.30, source: 'Referral Bonus', type: 'referral' },
-    { id: 2, date: '2024-01-14', amount: 85.50, source: 'Daily Activity', type: 'activity' },
-    { id: 3, date: '2024-01-13', amount: 200.00, source: 'Plan Commission', type: 'commission' },
-    { id: 4, date: '2024-01-12', amount: 95.25, source: 'Referral Bonus', type: 'referral' },
-    { id: 5, date: '2024-01-11', amount: 150.75, source: 'Performance Bonus', type: 'bonus' },
-    { id: 6, date: '2024-01-10', amount: 110.40, source: 'Daily Activity', type: 'activity' },
-    { id: 7, date: '2024-01-09', amount: 75.80, source: 'Referral Bonus', type: 'referral' },
-    { id: 8, date: '2024-01-08', amount: 190.25, source: 'Plan Commission', type: 'commission' },
-  ];
+  const currencies = ["So'm", "USD", "RUB"]; // Valyuta opsiyalari
 
-  const monthlyEarnings = 1587.25;
-  const dailyAverage = 52.91;
+  const handleDeposit = () => {
+    // Pul tushirish logikasi
+    console.log(`Depositing ${coinAmount} ${currency}`);
+    setBalance((prev) => prev + parseFloat(coinAmount || "0"));
+    setCoinAmount("");
+  };
 
-  const periods = [
-    { value: 'all', label: 'All Time' },
-    { value: '30', label: 'Last 30 Days' },
-    { value: '7', label: 'Last 7 Days' },
-    { value: 'today', label: 'Today' },
-  ];
-
-  const getSourceColor = (type: string) => {
-    switch (type) {
-      case 'referral': return 'text-blue-600 bg-blue-50';
-      case 'activity': return 'text-green-600 bg-green-50';
-      case 'commission': return 'text-purple-600 bg-purple-50';
-      case 'bonus': return 'text-orange-600 bg-orange-50';
-      default: return 'text-gray-600 bg-gray-50';
+  const handleWithdraw = () => {
+    // Pul yechish logikasi
+    if (balance >= parseFloat(coinAmount || "0")) {
+      console.log(`Withdrawing ${coinAmount} ${currency}`);
+      setBalance((prev) => prev - parseFloat(coinAmount || "0"));
+      setCoinAmount("");
+    } else {
+      alert("Insufficient balance");
     }
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-        <div className="flex items-center justify-between">
+    <div className="min-h-screen text-white p-6 space-y-6">
+      {/* Header va Balans */}
+      <div className="bg-gray-800 rounded-xl shadow-md p-6 border border-gray-700">
+        <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">{t('common.earnings')}</h1>
-            <p className="text-gray-600">Track your earnings and performance</p>
+            <h1 className="text-2xl font-bold">
+              Balans:{" "}
+              <span className="text-yellow-400">
+                {balance} {currency}
+              </span>
+            </h1>
+            <p className="text-gray-400 text-sm">
+              Coin'ni to'ldirish yoki yechish uchun quyidagi tugmalardan
+              foydalaning
+            </p>
           </div>
-          <div className="flex items-center space-x-4">
-            <select
-              value={selectedPeriod}
-              onChange={(e) => setSelectedPeriod(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          <div className="flex space-x-4">
+            <button
+              onClick={handleDeposit}
+              className="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg flex items-center"
             >
-              {periods.map((period) => (
-                <option key={period.value} value={period.value}>
-                  {period.label}
+              <Upload className="mr-2" size={16} /> Pul to'ldirish
+            </button>
+            <button
+              onClick={handleWithdraw}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg flex items-center"
+            >
+              <Download className="mr-2" size={16} /> Pul yechish
+            </button>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="relative">
+            <input
+              type="number"
+              value={coinAmount}
+              onChange={(e) => setCoinAmount(e.target.value)}
+              placeholder="Coin miqdorini kiriting"
+              className="w-full bg-gray-700 text-white border border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <div className="relative">
+            <select
+              value={currency}
+              onChange={(e) => setCurrency(e.target.value)}
+              className="w-full bg-gray-700 text-white border border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none"
+            >
+              {currencies.map((curr) => (
+                <option
+                  key={curr}
+                  value={curr}
+                  className="bg-gray-800 text-white"
+                >
+                  {curr}
                 </option>
               ))}
             </select>
           </div>
         </div>
+        <p className="text-red-400 text-sm mt-2">
+          Kurslar vaqtincha mavjud emas, litmos, keyinroq yana urinib ko'ring.
+          Uzr so'raymiz.
+        </p>
       </div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard
-          title={t('earnings.totalEarnings')}
-          value={`$${user?.totalEarnings.toFixed(2)}`}
-          icon={DollarSign}
-          color="blue"
-        />
-        <StatCard
-          title={t('earnings.monthlyEarnings')}
-          value={`$${monthlyEarnings.toFixed(2)}`}
-          icon={TrendingUp}
-          color="green"
-        />
-        <StatCard
-          title={t('earnings.dailyEarnings')}
-          value={`$${user?.todayEarnings.toFixed(2)}`}
-          icon={Calendar}
-          color="purple"
-        />
-        <StatCard
-          title="Daily Average"
-          value={`$${dailyAverage.toFixed(2)}`}
-          icon={TrendingUp}
-          color="orange"
-        />
-      </div>
-
-      {/* Earnings Chart Placeholder */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Earnings Trend</h2>
-        <div className="h-64 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg flex items-center justify-center">
-          <div className="text-center">
-            <TrendingUp className="mx-auto text-blue-600 mb-2" size={48} />
-            <p className="text-gray-600">Chart visualization would be here</p>
-            <p className="text-sm text-gray-500">Showing earnings trend over time</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Earnings History */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-lg font-semibold text-gray-900">{t('earnings.earningsHistory')}</h2>
-          <button className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
-            <Filter className="mr-2" size={16} />
-            Filter
-          </button>
-        </div>
-
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-gray-200">
-                <th className="text-left py-3 px-4 font-medium text-gray-500">{t('earnings.date')}</th>
-                <th className="text-left py-3 px-4 font-medium text-gray-500">{t('earnings.source')}</th>
-                <th className="text-right py-3 px-4 font-medium text-gray-500">{t('earnings.amount')}</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
-              {earningsHistory.map((earning) => (
-                <tr key={earning.id} className="hover:bg-gray-50">
-                  <td className="py-4 px-4">
-                    <div className="flex items-center space-x-2">
-                      <Calendar className="text-gray-400" size={16} />
-                      <span className="text-sm text-gray-900">
-                        {new Date(earning.date).toLocaleDateString()}
-                      </span>
-                    </div>
-                  </td>
-                  <td className="py-4 px-4">
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getSourceColor(earning.type)}`}>
-                      {earning.source}
-                    </span>
-                  </td>
-                  <td className="py-4 px-4 text-right">
-                    <span className="text-sm font-semibold text-green-600">
-                      +${earning.amount.toFixed(2)}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      {/* Yechish tarixi */}
+      <div className="bg-gray-800 rounded-xl shadow-md p-6 border border-gray-700">
+        <h2 className="text-xl font-semibold mb-4">Yechish tarixi</h2>
+        <div className="space-y-4">
+          {withdrawalHistory.map((item) => (
+            <div
+              key={item.id}
+              className="flex items-center justify-between bg-gray-700 p-4 rounded-lg"
+            >
+              <div>
+                <p className="text-lg font-medium">
+                  {item.amount} {item.currency}
+                </p>
+                <p className="text-sm text-gray-400">{item.date}</p>
+                <p className="text-sm text-gray-500">{item.maskedCard}</p>
+              </div>
+              <span
+                className={`px-3 py-1 rounded-full text-sm ${
+                  item.status === "Tasdiqlangan"
+                    ? "bg-green-500"
+                    : "bg-yellow-500"
+                } text-white`}
+              >
+                {item.status}
+              </span>
+            </div>
+          ))}
         </div>
       </div>
     </div>

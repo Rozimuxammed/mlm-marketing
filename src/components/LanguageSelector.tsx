@@ -14,9 +14,8 @@ const LanguageSelector: React.FC = () => {
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center justify-between w-full px-4 py-3 text-sm font-medium text-gray-700 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors"
       >
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center justify-center space-x-2 w-[30px]">
           <span className="text-lg">{currentLang?.flag}</span>
-          <span>{currentLang?.name}</span>
         </div>
         <ChevronDown 
           className={`transform transition-transform ${isOpen ? 'rotate-180' : ''}`}
@@ -25,7 +24,7 @@ const LanguageSelector: React.FC = () => {
       </button>
 
       {isOpen && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-64 overflow-y-auto">
+        <div className="absolute top-full w-40 left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-64 overflow-y-auto">
           {languages.map((language) => (
             <button
               key={language.code}
@@ -33,9 +32,9 @@ const LanguageSelector: React.FC = () => {
                 changeLanguage(language.code);
                 setIsOpen(false);
               }}
-              className="flex items-center justify-between w-full px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 transition-colors first:rounded-t-lg last:rounded-b-lg"
+              className="flex w-full items-center justify-between px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 transition-colors first:rounded-t-lg last:rounded-b-lg"
             >
-              <div className="flex items-center space-x-2">
+              <div className="flex w-full items-center space-x-2">
                 <span className="text-lg">{language.flag}</span>
                 <span>{language.name}</span>
               </div>
