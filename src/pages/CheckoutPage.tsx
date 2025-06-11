@@ -5,7 +5,6 @@ import {
   Trash2,
   Plus,
   Minus,
-  CreditCard,
   Coins,
   CheckCircle,
   ArrowRight,
@@ -24,7 +23,6 @@ const CheckoutPage: React.FC = () => {
     getTotalCoinPrice,
   } = useCart();
   const { user } = useAuth();
-  const [paymentMethod, setPaymentMethod] = useState<"card" | "coins">("card");
   const [isProcessing, setIsProcessing] = useState(false);
   const [orderComplete, setOrderComplete] = useState(false);
 

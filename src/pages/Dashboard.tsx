@@ -15,12 +15,12 @@ const Dashboard: React.FC = () => {
     { id: 4, type: 'purchase', description: 'Product purchased with coins', amount: `-${500} coins`, time: '2 days ago' },
   ];
 
-  const quickActions = [
-    { name: 'Browse Products', href: '/dashboard/products', color: 'bg-blue-500 hover:bg-blue-600' },
-    { name: 'Invite Friends', href: '/dashboard/referrals', color: 'bg-green-500 hover:bg-green-600' },
-    { name: 'Withdraw Funds', href: '/dashboard/withdraw', color: 'bg-purple-500 hover:bg-purple-600' },
-    { name: 'Upgrade Plan', href: '/dashboard/plans', color: 'bg-orange-500 hover:bg-orange-600' },
-  ];
+  // const quickActions = [
+  //   { name: 'Browse Products', href: '/dashboard/products', color: 'bg-blue-500 hover:bg-blue-600' },
+  //   { name: 'Invite Friends', href: '/dashboard/referrals', color: 'bg-green-500 hover:bg-green-600' },
+  //   { name: 'Withdraw Funds', href: '/dashboard/withdraw', color: 'bg-purple-500 hover:bg-purple-600' },
+  //   { name: 'Upgrade Plan', href: '/dashboard/plans', color: 'bg-orange-500 hover:bg-orange-600' },
+  // ];
 
   const planExpiryDate = new Date(user?.planExpiry || '');
   const daysRemaining = Math.ceil((planExpiryDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
@@ -108,7 +108,7 @@ const Dashboard: React.FC = () => {
         />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1">
         {/* Recent Activity */}
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
           <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
@@ -132,7 +132,7 @@ const Dashboard: React.FC = () => {
         </div>
 
         {/* Quick Actions */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        {/* <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
           <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
             {t('dashboard.quickActions')}
           </h2>
@@ -147,7 +147,7 @@ const Dashboard: React.FC = () => {
               </a>
             ))}
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

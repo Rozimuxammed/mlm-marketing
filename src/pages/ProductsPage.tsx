@@ -59,7 +59,7 @@ const ProductsPage: React.FC = () => {
       price: 39.99,
       coinPrice: 800,
       image:
-        "https://images.pexels.com/photos/590016/pexels-photo-590016.jpg?auto=compress&cs=tinysrgb&w=400",
+        "https://i.pinimg.com/originals/ee/49/a7/ee49a7393adcb6d870a86350845938f2.jpg",
       category: "digital",
       rating: 4.7,
       reviews: 112,
