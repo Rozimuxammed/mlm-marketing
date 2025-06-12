@@ -63,18 +63,18 @@ const EarningsPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen text-white p-6 space-y-6">
+    <div className="min-h-screen text-gray-900 dark:text-white p-6 space-y-6 bg-white dark:bg-gray-900">
       {/* Header va Balans */}
-      <div className="bg-gray-800 rounded-xl shadow-md p-6 border border-gray-700">
+      <div className="bg-gray-100 dark:bg-gray-800 rounded-xl shadow-md p-6 border border-gray-300 dark:border-gray-700">
         <div className="flex items-center justify-between mb-4">
           <div>
             <h1 className="text-2xl font-bold">
               Balans:{" "}
-              <span className="text-yellow-400">
+              <span className="text-yellow-600 dark:text-yellow-400">
                 {balance} {currency}
               </span>
             </h1>
-            <p className="text-gray-400 text-sm">
+            <p className="text-gray-600 dark:text-gray-400 text-sm">
               Coin'ni to'ldirish yoki yechish uchun quyidagi tugmalardan
               foydalaning
             </p>
@@ -101,20 +101,20 @@ const EarningsPage: React.FC = () => {
               value={coinAmount}
               onChange={(e) => setCoinAmount(e.target.value)}
               placeholder="Coin miqdorini kiriting"
-              className="w-full bg-gray-700 text-white border border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full bg-gray-200 dark:bg-gray-700 text-black dark:text-white border border-gray-400 dark:border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
           <div className="relative">
             <select
               value={currency}
               onChange={(e) => setCurrency(e.target.value)}
-              className="w-full bg-gray-700 text-white border border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none"
+              className="w-full bg-gray-200 dark:bg-gray-700 text-black dark:text-white border border-gray-400 dark:border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none"
             >
               {currencies.map((curr) => (
                 <option
                   key={curr}
                   value={curr}
-                  className="bg-gray-800 text-white"
+                  className="bg-white dark:bg-gray-800 text-black dark:text-white"
                 >
                   {curr}
                 </option>
@@ -122,27 +122,31 @@ const EarningsPage: React.FC = () => {
             </select>
           </div>
         </div>
-        <p className="text-red-400 text-sm mt-2">
+        <p className="text-red-500 dark:text-red-400 text-sm mt-2">
           Kurslar vaqtincha mavjud emas, litmos, keyinroq yana urinib ko'ring.
           Uzr so'raymiz.
         </p>
       </div>
 
       {/* Yechish tarixi */}
-      <div className="bg-gray-800 rounded-xl shadow-md p-6 border border-gray-700">
+      <div className="bg-gray-100 dark:bg-gray-800 rounded-xl shadow-md p-6 border border-gray-300 dark:border-gray-700">
         <h2 className="text-xl font-semibold mb-4">Yechish tarixi</h2>
         <div className="space-y-4">
           {withdrawalHistory.map((item) => (
             <div
               key={item.id}
-              className="flex items-center justify-between bg-gray-700 p-4 rounded-lg"
+              className="flex items-center justify-between bg-gray-200 dark:bg-gray-700 p-4 rounded-lg"
             >
               <div>
                 <p className="text-lg font-medium">
                   {item.amount} {item.currency}
                 </p>
-                <p className="text-sm text-gray-400">{item.date}</p>
-                <p className="text-sm text-gray-500">{item.maskedCard}</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  {item.date}
+                </p>
+                <p className="text-sm text-gray-500 dark:text-gray-300">
+                  {item.maskedCard}
+                </p>
               </div>
               <span
                 className={`px-3 py-1 rounded-full text-sm ${
