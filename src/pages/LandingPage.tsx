@@ -267,7 +267,7 @@ const LandingPage = () => {
         </section>
 
         {/* Footer */}
-        <footer className="bg-gray-900 dark:bg-black text-white py-12">
+        <footer className="bg-white dark:bg-black text-gray-900 dark:text-white py-12">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
               <div>
@@ -279,7 +279,7 @@ const LandingPage = () => {
                     MLM PLATFORM
                   </span>
                 </div>
-                <p className="text-sm sm:text-base text-gray-400">
+                <p className="text-sm sm:text-base text-gray-400 dark:text-gray-400">
                   {t("landing.footer.description")}
                 </p>
               </div>
@@ -288,11 +288,11 @@ const LandingPage = () => {
                 <h3 className="font-semibold mb-4 text-base sm:text-lg">
                   {t("landing.footer.platform.title")}
                 </h3>
-                <ul className="space-y-2 text-gray-400 text-sm sm:text-base">
+                <ul className="space-y-2 text-gray-400 dark:text-gray-400 text-sm sm:text-base">
                   <li>
                     <Link
                       to="/dashboard"
-                      className="hover:text-white transition-colors"
+                      className="hover:text-black dark:hover:text-white transition-colors"
                     >
                       {t("landing.footer.platform.dashboard")}
                     </Link>
@@ -300,7 +300,7 @@ const LandingPage = () => {
                   <li>
                     <Link
                       to="/dashboard/products"
-                      className="hover:text-white transition-colors"
+                      className="hover:text-black dark:hover:text-white transition-colors"
                     >
                       {t("landing.footer.platform.products")}
                     </Link>
@@ -308,7 +308,7 @@ const LandingPage = () => {
                   <li>
                     <Link
                       to="/dashboard/plans"
-                      className="hover:text-white transition-colors"
+                      className="hover:text-black dark:hover:text-white transition-colors"
                     >
                       {t("landing.footer.platform.plans")}
                     </Link>
@@ -320,19 +320,28 @@ const LandingPage = () => {
                 <h3 className="font-semibold mb-4 text-base sm:text-lg">
                   {t("landing.footer.support.title")}
                 </h3>
-                <ul className="space-y-2 text-gray-400 text-sm sm:text-base">
+                <ul className="space-y-2 text-gray-400 dark:text-gray-400 text-sm sm:text-base">
                   <li>
-                    <a href="#" className="hover:text-white transition-colors">
+                    <a
+                      href="#"
+                      className="hover:text-black dark:hover:text-white transition-colors"
+                    >
                       {t("landing.footer.support.help_center")}
                     </a>
                   </li>
                   <li>
-                    <a href="#" className="hover:text-white transition-colors">
+                    <a
+                      href="#"
+                      className="hover:text-black dark:hover:text-white transition-colors"
+                    >
                       {t("landing.footer.support.contact_us")}
                     </a>
                   </li>
                   <li>
-                    <a href="#" className="hover:text-white transition-colors">
+                    <a
+                      href="#"
+                      className="hover:text-black dark:hover:text-white transition-colors"
+                    >
                       {t("landing.footer.support.faq")}
                     </a>
                   </li>
@@ -343,19 +352,28 @@ const LandingPage = () => {
                 <h3 className="font-semibold mb-4 text-base sm:text-lg">
                   {t("landing.footer.legal.title")}
                 </h3>
-                <ul className="space-y-2 text-gray-400 text-sm sm:text-base">
+                <ul className="space-y-2 text-gray-400 dark:text-gray-400 text-sm sm:text-base">
                   <li>
-                    <a href="#" className="hover:text-white transition-colors">
+                    <a
+                      href="#"
+                      className="hover:text-black dark:hover:text-white transition-colors"
+                    >
                       {t("landing.footer.legal.privacy_policy")}
                     </a>
                   </li>
                   <li>
-                    <a href="#" className="hover:text-white transition-colors">
+                    <a
+                      href="#"
+                      className="hover:text-black dark:hover:text-white transition-colors"
+                    >
                       {t("landing.footer.legal.terms_of_service")}
                     </a>
                   </li>
                   <li>
-                    <a href="#" className="hover:text-white transition-colors">
+                    <a
+                      href="#"
+                      className="hover:text-black dark:hover:text-white transition-colors"
+                    >
                       {t("landing.footer.legal.cookie_policy")}
                     </a>
                   </li>
@@ -363,7 +381,7 @@ const LandingPage = () => {
               </div>
             </div>
 
-            <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400 text-sm sm:text-base">
+            <div className="border-t border-gray-800 dark:border-gray-700 mt-8 pt-8 text-center text-gray-400 dark:text-gray-400 text-sm sm:text-base">
               <p>
                 {t("landing.footer.copyright", {
                   year: new Date().getFullYear(),
