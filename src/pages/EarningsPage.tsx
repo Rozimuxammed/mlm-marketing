@@ -63,9 +63,9 @@ const EarningsPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen text-white p-6 space-y-6">
+    <div className="min-h-screen dark:text-white p-6 space-y-6">
       {/* Header va Balans */}
-      <div className="bg-gray-800 rounded-xl shadow-md p-6 border border-gray-700">
+      <div className="dark:bg-gray-800 rounded-xl shadow-md p-6 border dark:border-gray-700">
         <div className="flex items-center justify-between mb-4">
           <div>
             <h1 className="text-2xl font-bold">
@@ -74,7 +74,7 @@ const EarningsPage: React.FC = () => {
                 {balance} {currency}
               </span>
             </h1>
-            <p className="text-gray-400 text-sm">
+            <p className="dark:text-gray-400 text-sm">
               Coin'ni to'ldirish yoki yechish uchun quyidagi tugmalardan
               foydalaning
             </p>
@@ -82,16 +82,16 @@ const EarningsPage: React.FC = () => {
           <div className="flex space-x-4">
             <button
               onClick={handleDeposit}
-              className="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg flex items-center"
+              className="bg-green-500 hover:bg-green-600 dark:text-white px-6 py-2 rounded-lg flex items-center"
             >
               <Upload className="mr-2" size={16} /> Pul to'ldirish
             </button>
-            <button
+            {/* <button
               onClick={handleWithdraw}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg flex items-center"
+              className="bg-blue-600 hover:bg-blue-700 dark:text-white px-6 py-2 rounded-lg flex items-center"
             >
               <Download className="mr-2" size={16} /> Pul yechish
-            </button>
+            </button> */}
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -101,20 +101,20 @@ const EarningsPage: React.FC = () => {
               value={coinAmount}
               onChange={(e) => setCoinAmount(e.target.value)}
               placeholder="Coin miqdorini kiriting"
-              className="w-full bg-gray-700 text-white border border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full dark:bg-gray-700 dark:text-white border dark:border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
           <div className="relative">
             <select
               value={currency}
               onChange={(e) => setCurrency(e.target.value)}
-              className="w-full bg-gray-700 text-white border border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none"
+              className="w-full dark:bg-gray-700 dark:text-white border dark:border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none"
             >
               {currencies.map((curr) => (
                 <option
                   key={curr}
                   value={curr}
-                  className="bg-gray-800 text-white"
+                  className="dark:bg-gray-800 text-white"
                 >
                   {curr}
                 </option>
@@ -129,20 +129,20 @@ const EarningsPage: React.FC = () => {
       </div>
 
       {/* Yechish tarixi */}
-      <div className="bg-gray-800 rounded-xl shadow-md p-6 border border-gray-700">
+      <div className="dark:bg-gray-800 rounded-xl shadow-md p-6 border dark:border-gray-700">
         <h2 className="text-xl font-semibold mb-4">Yechish tarixi</h2>
         <div className="space-y-4">
           {withdrawalHistory.map((item) => (
             <div
               key={item.id}
-              className="flex items-center justify-between bg-gray-700 p-4 rounded-lg"
+              className="flex items-center justify-between dark:bg-gray-700 border  p-4 rounded-lg"
             >
               <div>
                 <p className="text-lg font-medium">
                   {item.amount} {item.currency}
                 </p>
-                <p className="text-sm text-gray-400">{item.date}</p>
-                <p className="text-sm text-gray-500">{item.maskedCard}</p>
+                <p className="text-sm dark:text-gray-400">{item.date}</p>
+                <p className="text-sm dark:text-gray-500">{item.maskedCard}</p>
               </div>
               <span
                 className={`px-3 py-1 rounded-full text-sm ${

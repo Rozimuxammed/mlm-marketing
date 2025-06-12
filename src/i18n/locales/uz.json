@@ -18,7 +18,7 @@
     "share": "Ulashish"
   },
   "auth": {
-    "welcome": "Tarmoqli ga xush kelibsiz",
+    "welcome": "MLM Platform ga xush kelibsiz",
     "subtitle": "Sizning marketing platformangiz",
     "email": "Email",
     "password": "Parol",
@@ -30,6 +30,7 @@
   },
   "dashboard": {
     "welcomeBack": "Xush kelibsiz",
+    "yourCoin": "Sizning tangangiz",
     "totalEarnings": "Umumiy daromad",
     "todayEarnings": "Bugungi daromad",
     "totalReferrals": "Jami taklif qilinganlar",
@@ -37,7 +38,18 @@
     "currentPlan": "Joriy tarif",
     "daysRemaining": "kun qoldi",
     "recentActivity": "So'nggi faoliyat",
-    "quickActions": "Tezkor harakatlar"
+    "quickActions": "Tezkor harakatlar",
+    "dailyBonus": "kunlik bonus",
+    "browseProducts": "Mahsulotlarni ko‘rish",
+    "inviteFriends": "Do‘stlarni taklif qilish",
+    "withdrawFunds": "Pul yechish",
+    "upgradePlan": "Tarifni yangilash",
+    "bonusHistory": "Bonusingiz qabul qilindi",
+    "coin": "tanga",
+    "dailyBonusAvailable": "Kunlik bonus mavjud!",
+    "claimYour": "Bonusingizni oling",
+    "coinsToday": "tangani bugun oling",
+    "claimNow": "Hozir oling"
   },
   "profile": {
     "personalInfo": "Shaxsiy ma'lumotlar",

@@ -65,7 +65,7 @@ const Navbar: React.FC = () => {
               to={user ? "/dashboard" : "/"}
               className="flex items-center space-x-3"
             >
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
+              <div className="w-10 h-8 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
                 <Globe className="text-white" size={20} />
               </div>
               <span className="text-xl font-bold text-gray-900 dark:text-white">
@@ -121,7 +121,7 @@ const Navbar: React.FC = () => {
                     size={16}
                   />
                   <span className="text-sm font-medium text-yellow-700 dark:text-yellow-300">
-                    {user.coins.toLocaleString()}
+                    {user?.coin?.toLocaleString()}
                   </span>
                 </div>
 
@@ -130,7 +130,7 @@ const Navbar: React.FC = () => {
                   to="/dashboard/checkout"
                   className="relative p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                 >
-                  <ShoppingCart size={20} />
+                  <ShoppingCart className="dark:text-slate-200" size={20} />
                   {getItemCount() > 0 && (
                     <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                       {getItemCount()}
@@ -146,14 +146,14 @@ const Navbar: React.FC = () => {
                   >
                     <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
                       <span className="text-white text-sm font-semibold">
-                        {user.name.charAt(0).toUpperCase()}
+                        {user.name?.charAt(0).toUpperCase()}
                       </span>
                     </div>
                     {/* <span className="hidden sm:block text-sm font-medium text-gray-700 dark:text-gray-300">
                       {user.name}
                     </span> */}
                     <ChevronDown
-                      className={`transform transition-transform ${
+                      className={`transform transition-transform dark:text-slate-200 ${
                         isUserMenuOpen ? "rotate-180" : ""
                       }`}
                       size={16}

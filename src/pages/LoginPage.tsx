@@ -3,7 +3,7 @@ import { Navigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Mail, Lock, Eye, EyeOff, Globe } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
-import LanguageSelector from "../components/LanguageSelector";
+// import LanguageSelector from "../components/LanguageSelector";
 
 const LoginPage: React.FC = () => {
   const { t } = useTranslation();

@@ -3,6 +3,8 @@ import { useTranslation } from "react-i18next";
 
 type Language = "en" | "ru" | "uz" | "kk" | "ky" | "tg" | "zh";
 
+const lang: "string" = localStorage.getItem("i18nextLng");
+
 interface LanguageContextType {
   currentLanguage: Language;
   changeLanguage: (lang: Language) => void;
@@ -25,7 +27,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const { i18n } = useTranslation();
-  const [currentLanguage, setCurrentLanguage] = useState<Language>("en");
+  const [currentLanguage, setCurrentLanguage] = useState<Language>(lang);
 
   const languages = [
     { code: "en" as Language, name: "English", flag: "🇺🇸", currency: "USD" },
