@@ -12,13 +12,13 @@ const LanguageSelector: React.FC = () => {
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center justify-between w-[60px] px-2 py-2 text-sm font-medium text-gray-700 bg-gray-50 hover:bg-gray-100 dark:text-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-lg transition-colors"
+        className="flex items-center justify-between w-[60px] px-4 py-1 text-sm font-medium text-gray-700 bg-gray-50 hover:bg-gray-100 dark:text-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-lg transition-colors"
       >
         <div className="flex items-center justify-center space-x-2">
           <span className="text-lg">{currentLang?.flag}</span>
         </div>
         <ChevronDown
-          className={`transform transition-transform ${
+          className={`transform transition-transform dark:text-slate-200 ${
             isOpen ? "rotate-180" : ""
           }`}
           size={16}

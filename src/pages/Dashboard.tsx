@@ -48,12 +48,28 @@ const Dashboard: React.FC = () => {
     },
   ];
 
-  // const quickActions = [
-  //   { name: 'Browse Products', href: '/dashboard/products', color: 'bg-blue-500 hover:bg-blue-600' },
-  //   { name: 'Invite Friends', href: '/dashboard/referrals', color: 'bg-green-500 hover:bg-green-600' },
-  //   { name: 'Withdraw Funds', href: '/dashboard/withdraw', color: 'bg-purple-500 hover:bg-purple-600' },
-  //   { name: 'Upgrade Plan', href: '/dashboard/plans', color: 'bg-orange-500 hover:bg-orange-600' },
-  // ];
+  const quickActions = [
+    {
+      name: t("dashboard.browseProducts"),
+      href: "/dashboard/products",
+      color: "bg-blue-500 hover:bg-blue-600",
+    },
+    {
+      name: t("dashboard.inviteFriends"),
+      href: "/dashboard/referrals",
+      color: "bg-green-500 hover:bg-green-600",
+    },
+    {
+      name: t("dashboard.withdrawFunds"),
+      href: "/dashboard/withdraw",
+      color: "bg-purple-500 hover:bg-purple-600",
+    },
+    {
+      name: t("dashboard.upgradePlan"),
+      href: "/dashboard/plans",
+      color: "bg-orange-500 hover:bg-orange-600",
+    },
+  ];
 
   const planExpiryDate = new Date(user?.planExpiry || "");
   const daysRemaining = Math.ceil(
@@ -66,6 +82,16 @@ const Dashboard: React.FC = () => {
   const handleClaimBonus = () => {
     claimDailyBonus();
   };
+
+  function formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    const options: Intl.DateTimeFormatOptions = {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    };
+    return new Intl.DateTimeFormat("en-US", options).format(date);
+  }
 
   return (
     <div className="space-y-6">
@@ -89,8 +115,7 @@ const Dashboard: React.FC = () => {
             </p>
           </div>
           <div className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
-            <Calendar size={16} />
-            <span>{new Date().toLocaleDateString()}</span>
+            {formatDate(user.createdAt)}
           </div>
         </div>
       </div>
@@ -105,10 +130,11 @@ const Dashboard: React.FC = () => {
               </div>
               <div>
                 <h3 className="text-lg font-semibold">
-                  Daily Bonus Available!
+                  {t("dashboard.dailyBonusAvailable")}
                 </h3>
                 <p className="text-yellow-100">
-                  Claim your {user?.dailyBonus} coins today
+                  {t("dashboard.claimYour")} {user?.dailyBonus}{" "}
+                  {t("dashboard.coinsToday")}
                 </p>
               </div>
             </div>
@@ -116,26 +142,20 @@ const Dashboard: React.FC = () => {
               onClick={handleClaimBonus}
               className="px-6 py-3 bg-white dark:bg-gray-100 text-orange-600 font-semibold rounded-lg hover:bg-gray-100 dark:hover:bg-gray-200 transition-colors"
             >
-              Claim Now
+              {t("dashboard.claimNow")}
             </button>
           </div>
         </div>
       )}
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
         <StatCard
-          title="Your Coins"
+          title={t("dashboard.yourCoin")}
           value={user?.coins.toLocaleString() || "0"}
           icon={Coins}
           color="blue"
-          subtitle={`+${user?.dailyBonus} daily bonus`}
-        />
-        <StatCard
-          title={t("dashboard.totalEarnings")}
-          value={`$${user?.totalEarnings.toFixed(2)}`}
-          icon={DollarSign}
-          color="green"
+          subtitle={`+${user?.coin} ${t("dashboard.dailyBonus")}`}
         />
         <StatCard
           title={t("dashboard.totalReferrals")}
@@ -186,9 +206,9 @@ const Dashboard: React.FC = () => {
         </div>
 
         {/* Quick Actions */}
-        {/* <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
           <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-            {t('dashboard.quickActions')}
+            {t("dashboard.quickActions")}
           </h2>
           <div className="grid grid-cols-2 gap-3">
             {quickActions.map((action, index) => (
@@ -201,7 +221,7 @@ const Dashboard: React.FC = () => {
               </a>
             ))}
           </div>
-        </div> */}
+        </div>
       </div>
     </div>
   );

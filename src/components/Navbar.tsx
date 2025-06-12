@@ -66,7 +66,7 @@ const Navbar = () => {
               to={user ? "/dashboard" : "/"}
               className="flex items-center space-x-2"
             >
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
+              <div className="w-10 h-8 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
                 <Globe className="text-white" size={20} />
               </div>
               <span className="hidden sm:block text-lg font-bold text-gray-900 dark:text-white">
@@ -122,7 +122,7 @@ const Navbar = () => {
                     size={14}
                   />
                   <span className="text-xs font-medium text-yellow-700 dark:text-yellow-300">
-                    {user.coins.toLocaleString()}
+                    {user?.coin?.toLocaleString()}
                   </span>
                 </div>
 
@@ -131,7 +131,7 @@ const Navbar = () => {
                   to="/dashboard/checkout"
                   className="relative p-1.5 sm:p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                 >
-                  <ShoppingCart size={18} />
+                  <ShoppingCart className="dark:text-slate-200" size={18} />
                   {getItemCount() > 0 && (
                     <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
                       {getItemCount()}
@@ -147,11 +147,11 @@ const Navbar = () => {
                   >
                     <div className="w-6 h-6 sm:w-7 sm:h-7 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
                       <span className="text-white text-xs font-semibold">
-                        {user.name.charAt(0).toUpperCase()}
+                        {user.name?.charAt(0).toUpperCase()}
                       </span>
                     </div>
                     <ChevronDown
-                      className={`transform transition-transform ${
+                      className={`transform transition-transform dark:text-slate-200 ${
                         isUserMenuOpen ? "rotate-180" : ""
                       }`}
                       size={14}

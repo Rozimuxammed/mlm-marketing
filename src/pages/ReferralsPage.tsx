@@ -18,7 +18,7 @@ const ReferralsPage: React.FC = () => {
   const { user } = useAuth();
   const [copiedLink, setCopiedLink] = useState(false);
 
-  const referralLink = `https://tarmoqli.com/ref/${user?.referralCode}`;
+  const referralLink = `${import.meta.env.VITE_REFERAL_KEY}/referal/${user.id}`;
 
   const referralFriends = [
     {
@@ -112,14 +112,14 @@ const ReferralsPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+   <div className="space-y-6">
       {/* Header */}
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
           {t("common.referrals")}
         </h1>
         <p className="text-gray-600 dark:text-gray-400">
-          Invite friends and earn bonuses for each successful referral
+          {t("referrals.inviteFriends")}
         </p>
       </div>
 
@@ -206,7 +206,7 @@ const ReferralsPage: React.FC = () => {
         {/* Referral Stats */}
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
           <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-            Referral Performance
+            {t("referrals.performance")}
           </h2>
 
           <div className="space-y-4">
@@ -217,10 +217,10 @@ const ReferralsPage: React.FC = () => {
                 </div>
                 <div>
                   <p className="font-medium text-gray-900 dark:text-white">
-                    Paid Referrals
+                    {t("referrals.paidReferrals")}
                   </p>
                   <p className="text-sm text-gray-600 dark:text-gray-300">
-                    {paidReferrals} friends
+                    {t("referrals.friendsCount", { count: paidReferrals })}
                   </p>
                 </div>
               </div>
@@ -236,10 +236,10 @@ const ReferralsPage: React.FC = () => {
                 </div>
                 <div>
                   <p className="font-medium text-gray-900 dark:text-white">
-                    Pending Referrals
+                    {t("referrals.pendingReferrals")}
                   </p>
                   <p className="text-sm text-gray-600 dark:text-gray-300">
-                    {pendingReferrals} friends
+                    {t("referrals.friendsCount", { count: pendingReferrals })}
                   </p>
                 </div>
               </div>

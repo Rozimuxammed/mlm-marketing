@@ -19,7 +19,7 @@
     "share": "Share"
   },
   "auth": {
-    "welcome": "Welcome to Tarmoqli",
+    "welcome": "Welcome to MLM Platform",
     "subtitle": "Your Marketing Platform",
     "email": "Email",
     "password": "Password",
@@ -31,6 +31,7 @@
   },
   "dashboard": {
     "welcomeBack": "Welcome back",
+    "yourCoin": "Your Coin",
     "totalEarnings": "Total Earnings",
     "todayEarnings": "Today's Earnings",
     "totalReferrals": "Total Referrals",
@@ -38,7 +39,18 @@
     "currentPlan": "Current Plan",
     "daysRemaining": "days remaining",
     "recentActivity": "Recent Activity",
-    "quickActions": "Quick Actions"
+    "quickActions": "Quick Actions",
+    "dailyBonus": "daily bonus",
+    "browseProducts": "Browse Products",
+    "inviteFriends": "Invite Friends",
+    "withdrawFunds": "Withdraw Funds",
+    "upgradePlans": "Upgrade Plans",
+    "bonusHistory": "Your bonus was received on",
+    "coin": "coin",
+    "dailyBonusAvailable": "Daily Bonus Available!",
+    "claimYour": "Claim your",
+    "coinsToday": "coins today",
+    "claimNow": "  Claim Now"
   },
   "profile": {
     "personalInfo": "Personal Information",

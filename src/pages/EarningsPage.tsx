@@ -1,20 +1,13 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import {
-  DollarSign,
-  TrendingUp,
-  Calendar,
-  Filter,
-  Download,
-  Upload,
-} from "lucide-react";
+import { Download, Upload } from "lucide-react";
 import StatCard from "../components/StatCard";
 
 const EarningsPage: React.FC = () => {
   const { t } = useTranslation();
-  const [balance, setBalance] = useState(0); // Balans holati
-  const [coinAmount, setCoinAmount] = useState(""); // Coin miqdori
-  const [currency, setCurrency] = useState("So'm"); // Valyuta tanlash
+  const [balance, setBalance] = useState(0);
+  const [coinAmount, setCoinAmount] = useState("");
+  const [currency, setCurrency] = useState("So'm");
   const [withdrawalHistory] = useState([
     {
       id: 1,
@@ -42,17 +35,15 @@ const EarningsPage: React.FC = () => {
     },
   ]);
 
-  const currencies = ["So'm", "USD", "RUB"]; // Valyuta opsiyalari
+  const currencies = ["So'm", "USD", "RUB"];
 
   const handleDeposit = () => {
-    // Pul tushirish logikasi
     console.log(`Depositing ${coinAmount} ${currency}`);
     setBalance((prev) => prev + parseFloat(coinAmount || "0"));
     setCoinAmount("");
   };
 
   const handleWithdraw = () => {
-    // Pul yechish logikasi
     if (balance >= parseFloat(coinAmount || "0")) {
       console.log(`Withdrawing ${coinAmount} ${currency}`);
       setBalance((prev) => prev - parseFloat(coinAmount || "0"));
@@ -71,7 +62,7 @@ const EarningsPage: React.FC = () => {
             <h1 className="text-2xl font-bold">
               Balans:{" "}
               <span className="text-yellow-600 dark:text-yellow-400">
-                {balance} {currency}
+                {balance.toLocaleString()} {currency}
               </span>
             </h1>
             <p className="text-gray-600 dark:text-gray-400 text-sm">
@@ -82,13 +73,13 @@ const EarningsPage: React.FC = () => {
           <div className="flex space-x-4">
             <button
               onClick={handleDeposit}
-              className="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg flex items-center"
+              className="bg-green-500 hover:bg-green-600 dark:text-white px-6 py-2 rounded-lg flex items-center"
             >
               <Upload className="mr-2" size={16} /> Pul to'ldirish
             </button>
             <button
               onClick={handleWithdraw}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg flex items-center"
+              className="bg-blue-600 hover:bg-blue-700 dark:text-white px-6 py-2 rounded-lg flex items-center"
             >
               <Download className="mr-2" size={16} /> Pul yechish
             </button>

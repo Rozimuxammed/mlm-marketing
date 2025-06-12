@@ -18,7 +18,7 @@
     "share": "Мубодила"
   },
   "auth": {
-    "welcome": "Ба Tarmoqli хуш омадед",
+    "welcome": "Ба MLM Platform хуш омадед",
     "subtitle": "Платформаи маркетингии шумо",
     "email": "Почтаи электронӣ",
     "password": "Калидвожа",
@@ -30,14 +30,26 @@
   },
   "dashboard": {
     "welcomeBack": "Боз хуш омадед",
+    "yourCoin": "Тангаи шумо",
     "totalEarnings": "Маҷмӯи даромад",
     "todayEarnings": "Даромади имрӯз",
     "totalReferrals": "Маҷмӯи рефералҳо",
-    "currentBalance": "Балансе ҷорӣ",
+    "currentBalance": "Баланси ҷорӣ",
     "currentPlan": "Тарифи ҷорӣ",
     "daysRemaining": "рӯз боқӣ мондааст",
     "recentActivity": "Фаъолияти охирин",
-    "quickActions": "Амалҳои тез"
+    "quickActions": "Амалҳои тез",
+    "dailyBonus": "бонуси ҳаррӯза",
+    "browseProducts": "Маҳсулотҳоро дидан",
+    "inviteFriends": "Дӯстонро даъват кардан",
+    "withdrawFunds": "Пул гирифтан",
+    "upgradePlan": "Навсозии тариф",
+    "bonusHistory": "Бонуси шумо қабул шуд",
+    "coin": "танга",
+    "dailyBonusAvailable": "Бонуси ҳаррӯза дастрас аст!",
+    "claimYour": "Бонуси худро гиред",
+    "coinsToday": "тангаро имрӯз гиред",
+    "claimNow": "Ҳозир гиред"
   },
   "profile": {
     "personalInfo": "Маълумоти шахсӣ",

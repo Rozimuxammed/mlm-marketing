@@ -70,16 +70,28 @@ const WithdrawPage: React.FC = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-
-    // Reset form
-    setWithdrawAmount("");
-    setCardNumber("");
-    setCardHolder("");
-    setIsSubmitting(false);
-
-    alert("Withdrawal request submitted successfully!");
+    try {
+      const response = await fetch("https://api.interkassa.com/withdraw", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: user?.id,
+          amount: parseFloat(withdrawAmount),
+          cardNumber: cardNumber.replace(/\s/g, ""),
+          cardHolder,
+        }),
+      });
+      if (!response.ok) throw new Error("Withdrawal failed");
+      setWithdrawAmount("");
+      setCardNumber("");
+      setCardHolder("");
+      alert("Withdrawal request submitted successfully!");
+    } catch (error) {
+      console.error("Withdrawal error:", error);
+      alert("Withdrawal request failed. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const getStatusIcon = (status: string) => {
@@ -98,21 +110,18 @@ const WithdrawPage: React.FC = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "completed":
-        return "bg-green-100 text-green-800";
+        return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300";
       case "processing":
-        return "bg-orange-100 text-orange-800";
+        return "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300";
       case "rejected":
-        return "bg-red-100 text-red-800";
+        return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300";
     }
   };
 
   const formatCardNumber = (value: string) => {
-    // Remove all non-digit characters
     const v = value.replace(/\s+/g, "").replace(/[^0-9]/gi, "");
-
-    // Add spaces every 4 digits
     const matches = v.match(/\d{4,16}/g);
     const match = (matches && matches[0]) || "";
     const parts = [];
@@ -121,11 +130,7 @@ const WithdrawPage: React.FC = () => {
       parts.push(match.substring(i, i + 4));
     }
 
-    if (parts.length) {
-      return parts.join(" ");
-    } else {
-      return v;
-    }
+    return parts.length ? parts.join(" ") : v;
   };
 
   const handleCardNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -141,7 +146,7 @@ const WithdrawPage: React.FC = () => {
           {t("withdraw.withdrawFunds")}
         </h1>
         <p className="text-gray-600 dark:text-gray-300">
-          Request withdrawals and track your payment history
+          {t("withdraw.trackHistory")}
         </p>
       </div>
 
@@ -149,24 +154,24 @@ const WithdrawPage: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard
           title={t("withdraw.availableBalance")}
-          value={`$${user?.balance.toFixed(2)}`}
+          value={`$${(user?.balance ?? 0).toFixed(2)}`}
           icon={Wallet}
           color="blue"
         />
         <StatCard
-          title="Total Withdrawn"
+          title={t("withdraw.totalWithdrawn")}
           value={`$${totalWithdrawn.toFixed(2)}`}
           icon={DollarSign}
           color="green"
         />
         <StatCard
-          title="Pending Withdrawals"
+          title={t("withdraw.pendingWithdrawals")}
           value={`$${pendingWithdrawals.toFixed(2)}`}
           icon={Clock}
           color="orange"
         />
         <StatCard
-          title="This Month"
+          title={t("withdraw.thisMonth")}
           value={`$${(totalWithdrawn * 0.3).toFixed(2)}`}
           icon={Calendar}
           color="purple"
@@ -177,7 +182,7 @@ const WithdrawPage: React.FC = () => {
         {/* Withdrawal Form */}
         <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
           <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">
-            Request Withdrawal
+            {t("withdraw.requestWithdrawal")}
           </h2>
 
           <form onSubmit={handleWithdrawSubmit} className="space-y-6">
@@ -203,8 +208,8 @@ const WithdrawPage: React.FC = () => {
                 />
               </div>
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                Minimum withdrawal: $10.00 | Available: $
-                {user?.balance.toFixed(2)}
+                {t("withdraw.minimumWithdrawal", { amount: 10 })} | {t("withdraw.available")}: $
+                {(user?.balance ?? 0).toFixed(2)}
               </p>
             </div>
 
@@ -258,15 +263,13 @@ const WithdrawPage: React.FC = () => {
 
           <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
             <h4 className="font-medium text-blue-900 dark:text-blue-200 mb-2">
-              Important Notes:
+              {t("withdraw.notes")}
             </h4>
             <ul className="text-sm text-blue-800 dark:text-blue-300 space-y-1">
-              <li>• Withdrawals are processed within 1-3 business days</li>
-              <li>• Minimum withdrawal amount is $10.00</li>
-              <li>
-                • Processing fees may apply depending on your payment method
-              </li>
-              <li>• Ensure your card details are correct to avoid delays</li>
+              <li>• {t("withdraw.notesList.processingTime")}</li>
+              <li>• {t("withdraw.notesList.minimumAmount")}</li>
+              <li>• {t("withdraw.notesList.fees")}</li>
+              <li>• {t("withdraw.notesList.cardDetails")}</li>
             </ul>
           </div>
         </div>
@@ -286,36 +289,32 @@ const WithdrawPage: React.FC = () => {
                 <div className="flex items-center space-x-3">
                   {getStatusIcon(withdrawal.status)}
                   <div>
-                    <p className="font-medium text-gray-900 dark:text-white">
-                      ${withdrawal.amount.toFixed(2)}
-                    </p>
+                    <p className <span class="font-medium text-gray-900 dark:text-white">${withdrawal.amount.toFixed(2)}</span>
                     <p className="text-xs text-gray-500 dark:text-gray-400">
-                      {new Date(withdrawal.requestDate).toLocaleDateString()}
+                      {new Date(withdrawal.requestDate).toLocaleString()}
                     </p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <span
-                    className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(
-                      withdrawal.status
-                    )}`}
-                  >
-                    {withdrawal.status === "completed" &&
-                      t("withdraw.completed")}
-                    {withdrawal.status === "processing" &&
-                      t("withdraw.processing")}
-                    {withdrawal.status === "rejected" && t("withdraw.rejected")}
-                  </span>
-                  {withdrawal.processedDate && (
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                      Processed:{" "}
-                      {new Date(withdrawal.processedDate).toLocaleDateString()}
-                    </p>
-                  )}
+                  <div className="flex-center text-right">
+                    <span
+                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${getStatusColor(
+                        withdrawal.status
+                      )}`}
+                    >
+                      {t(`withdraw.${withdrawal.status}`)}
+                    </span>
+                    {withdrawal.processedDate && (
+                      <p className="text-red text-xs dark:text-gray-400 mt-1">
+                        {t("withdraw.processed")}: {new Date(
+                          withdrawal.processedDate
+                        ).toLocaleString()}
+                      </p>
+                    )}
+                  </div>
                 </div>
               </div>
-            ))}
-          </div>
+          ))}
         </div>
       </div>
     </div>

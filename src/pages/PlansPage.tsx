@@ -16,11 +16,11 @@ const PlansPage: React.FC = () => {
       icon: Zap,
       color: "blue",
       features: [
-        "Up to 10 referrals per month",
-        "Basic earning opportunities",
-        "Email support",
-        "Basic analytics",
-        "Mobile app access",
+        t("plans.basic.features.referrals"),
+        t("plans.basic.features.earnings"),
+        t("plans.basic.features.support"),
+        t("plans.basic.features.analytics"),
+        t("plans.basic.features.mobile"),
       ],
     },
     {
@@ -31,12 +31,12 @@ const PlansPage: React.FC = () => {
       color: "purple",
       popular: true,
       features: [
-        "Unlimited referrals",
-        "Premium earning opportunities",
-        "Priority support",
-        "Advanced analytics",
-        "Mobile app access",
-        "Exclusive bonuses",
+        t("plans.premium.features.referrals"),
+        t("plans.premium.features.earnings"),
+        t("plans.premium.features.support"),
+        t("plans.premium.features.analytics"),
+        t("plans.premium.features.mobile"),
+        t("plans.premium.features.bonuses"),
       ],
     },
     {
@@ -46,19 +46,18 @@ const PlansPage: React.FC = () => {
       icon: Star,
       color: "orange",
       features: [
-        "Everything in Premium",
-        "Team management",
-        "API access",
-        "Custom integrations",
-        "Dedicated account manager",
-        "White-label options",
+        t("plans.enterprise.features.premium"),
+        t("plans.enterprise.features.team"),
+        t("plans.enterprise.features.api"),
+        t("plans.enterprise.features.integrations"),
+        t("plans.enterprise.features.manager"),
+        t("plans.enterprise.features.whitelabel"),
       ],
     },
   ];
 
   const handleSelectPlan = (planId: string) => {
     setSelectedPlan(planId);
-    // Here you would integrate with InterKassa payment system
     console.log("Selected plan:", planId);
   };
 
@@ -104,8 +103,7 @@ const PlansPage: React.FC = () => {
             {t("plans.choosePlan")}
           </h1>
           <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            Choose the perfect plan for your marketing needs. All plans include
-            our core features with different limits and bonuses.
+            {t("plans.choosePlanDescription")}
           </p>
         </div>
       </div>
@@ -129,7 +127,7 @@ const PlansPage: React.FC = () => {
             </div>
             <div className="text-right">
               <p className="text-sm text-blue-600 dark:text-blue-300">
-                Expires on
+                {t("plans.expiresOn")}
               </p>
               <p className="font-semibold text-blue-900 dark:text-white">
                 {new Date(user.planExpiry).toLocaleDateString()}
@@ -206,7 +204,7 @@ const PlansPage: React.FC = () => {
                     : colors.button
                 }`}
               >
-                {isCurrentPlan ? "Current Plan" : t("plans.selectPlan")}
+                {isCurrentPlan ? t("plans.currentPlan") : t("plans.selectPlan")}
               </button>
             </div>
           );
@@ -219,12 +217,10 @@ const PlansPage: React.FC = () => {
           <CreditCard className="text-blue-600 flex-shrink-0 mt-1" size={20} />
           <div>
             <h3 className="font-medium text-gray-900 dark:text-white mb-2">
-              Secure Payment Processing
+              {t("plans.securePayment")}
             </h3>
             <p className="text-sm text-gray-600 dark:text-gray-300">
-              All payments are processed securely through InterKassa. We support
-              major credit cards, bank transfers, and digital wallets. Your
-              payment information is encrypted and never stored on our servers.
+              {t("plans.securePaymentDescription")}
             </p>
           </div>
         </div>
@@ -233,34 +229,31 @@ const PlansPage: React.FC = () => {
       {/* FAQ Section */}
       <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-          Frequently Asked Questions
+          {t("plans.faq.title")}
         </h3>
         <div className="space-y-4">
           <div>
             <h4 className="font-medium text-gray-900 dark:text-white">
-              Can I change my plan anytime?
+              {t("plans.faq.changePlan")}
             </h4>
             <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
-              Yes, you can upgrade or downgrade your plan at any time. Changes
-              will be reflected in your next billing cycle.
+              {t("plans.faq.changePlanAnswer")}
             </p>
           </div>
           <div>
             <h4 className="font-medium text-gray-900 dark:text-white">
-              What happens if I cancel my subscription?
+              {t("plans.faq.cancelSubscription")}
             </h4>
             <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
-              You can cancel anytime. You'll continue to have access until the
-              end of your current billing period.
+              {t("plans.faq.cancelSubscriptionAnswer")}
             </p>
           </div>
           <div>
             <h4 className="font-medium text-gray-900 dark:text-white">
-              Are there any setup fees?
+              {t("plans.faq.setupFees")}
             </h4>
             <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
-              No, there are no setup fees. You only pay the monthly subscription
-              fee for your chosen plan.
+              {t("plans.faq.setupFeesAnswer")}
             </p>
           </div>
         </div>

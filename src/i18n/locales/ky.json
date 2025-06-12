@@ -18,7 +18,7 @@
     "share": "Бөлүшүү"
   },
   "auth": {
-    "welcome": "Tarmoqli-га кош келдиңиз",
+    "welcome": "MLM Platform-га кош келдиңиз",
     "subtitle": "Сиздин маркетинг платформаңыз",
     "email": "Email",
     "password": "Сырсөз",
@@ -30,14 +30,26 @@
   },
   "dashboard": {
     "welcomeBack": "Кайра кош келдиңиз",
+    "yourCoin": "Сиздин тыйындарыңыз",
     "totalEarnings": "Жалпы киреше",
     "todayEarnings": "Бүгүнкү киреше",
-    "totalReferrals": "Бардык рефералдар",
+    "totalReferrals": "Жалпы рефералдар",
     "currentBalance": "Учурдагы баланс",
-    "currentPlan": "Учурдагы тариф",
-    "daysRemaining": "күн калды",
-    "recentActivity": "Акыркы активдүүлүк",
-    "quickActions": "Тез аракеттер"
+    "currentPlan": "Учурдагы план",
+    "daysRemaining": "калган күндөр",
+    "recentActivity": "Акыркы аракеттер",
+    "quickActions": "Тез аракеттер",
+    "dailyBonus": "күнүмдүк бонус",
+    "browseProducts": "Продукттарды көрүү",
+    "inviteFriends": "Досторду чакыруу",
+    "withdrawFunds": "Каражат алуу",
+    "upgradePlan": "Планды жаңыртуу",
+    "bonusHistory": "Сиздин бонусуңуз алынды",
+    "coin": "тыйын",
+    "dailyBonusAvailable": "Күнүмдүк бонус жеткиликтүү!",
+    "claimYour": "Бонусуңузду алыңыз",
+    "coinsToday": "тыйынды бүгүн алыңыз",
+    "claimNow": "Азыр алыңыз"
   },
   "profile": {
     "personalInfo": "Жеке маалымат",

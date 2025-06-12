@@ -36,7 +36,7 @@ const ProfilePage: React.FC = () => {
           {t("common.profile")}
         </h1>
         <p className="text-gray-600 dark:text-gray-300">
-          Manage your account information and settings
+          {t("profile.manageAccount")}
         </p>
       </div>
 
@@ -72,9 +72,17 @@ const ProfilePage: React.FC = () => {
               {/* Profile Info */}
               <div className="flex items-start space-x-6">
                 <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-                  <span className="text-2xl font-bold text-white">
-                    {user?.name.charAt(0).toUpperCase()}
-                  </span>
+                  {user?.avatar ? (
+                    <img
+                      src={user.avatar}
+                      alt="Avatar"
+                      className="w-20 h-20 rounded-full"
+                    />
+                  ) : (
+                    <span className="text-2xl font-bold text-white">
+                      {user?.name?.charAt(0).toUpperCase() || "U"}
+                    </span>
+                  )}
                 </div>
                 <div className="flex-1">
                   <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
@@ -166,7 +174,7 @@ const ProfilePage: React.FC = () => {
                 {/* Security Settings */}
                 <div className="border border-gray-200 dark:border-gray-800 rounded-lg p-6">
                   <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">
-                    Security
+                    {t("profile.security")}
                   </h3>
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
@@ -177,7 +185,7 @@ const ProfilePage: React.FC = () => {
                             {t("profile.changePassword")}
                           </p>
                           <p className="text-sm text-gray-500 dark:text-gray-400">
-                            Update your password
+                            {t("profile.updatePassword")}
                           </p>
                         </div>
                       </div>
@@ -191,7 +199,7 @@ const ProfilePage: React.FC = () => {
                 {/* Preferences */}
                 <div className="border border-gray-200 dark:border-gray-800 rounded-lg p-6">
                   <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">
-                    Preferences
+                    {t("profile.preferences")}
                   </h3>
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
@@ -202,7 +210,7 @@ const ProfilePage: React.FC = () => {
                             {t("profile.notifications")}
                           </p>
                           <p className="text-sm text-gray-500 dark:text-gray-400">
-                            Manage your notification preferences
+                            {t("profile.notificationPreferences")}
                           </p>
                         </div>
                       </div>
@@ -219,7 +227,7 @@ const ProfilePage: React.FC = () => {
                             {t("profile.language")}
                           </p>
                           <p className="text-sm text-gray-500 dark:text-gray-400">
-                            Choose your preferred language
+                            {t("profile.languagePreference")}
                           </p>
                         </div>
                       </div>
@@ -236,16 +244,14 @@ const ProfilePage: React.FC = () => {
                             {t("profile.theme")}
                           </p>
                           <p className="text-sm text-gray-500 dark:text-gray-400">
-                            Switch between light and dark mode
+                            {t("profile.themePreference")}
                           </p>
                         </div>
                       </div>
                       <button
                         onClick={toggleTheme}
                         className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                          isDarkMode
-                            ? "bg-blue-600"
-                            : "bg-gray-200 dark:bg-gray-600"
+                          isDarkMode ? "bg-blue-600" : "bg-gray-200 dark:bg-gray-600"
                         }`}
                       >
                         <span
