@@ -5,7 +5,6 @@ import {
   Trash2,
   Plus,
   Minus,
-  CreditCard,
   Coins,
   CheckCircle,
   ArrowRight,
@@ -24,7 +23,6 @@ const CheckoutPage: React.FC = () => {
     getTotalCoinPrice,
   } = useCart();
   const { user } = useAuth();
-  const [paymentMethod, setPaymentMethod] = useState<"card" | "coins">("card");
   const [isProcessing, setIsProcessing] = useState(false);
   const [orderComplete, setOrderComplete] = useState(false);
 
@@ -128,32 +126,32 @@ const CheckoutPage: React.FC = () => {
             {items.map((item) => (
               <div
                 key={item.id}
-                className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6"
+                className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6"
               >
-                <div className="flex items-center space-x-4">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-4 sm:space-y-0">
                   <img
                     src={item.image}
                     alt={item.name}
-                    className="w-20 h-20 object-cover rounded-lg"
+                    className="w-full sm:w-20 sm:h-20 h-40 object-cover rounded-lg"
                   />
 
                   <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                    <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">
                       {item.name}
                     </h3>
-                    <div className="flex items-center space-x-4 mt-2">
-                      <span className="text-lg font-bold text-gray-900 dark:text-white">
+                    <div className="flex flex-wrap items-center gap-2 mt-2">
+                      <span className="text-base sm:text-lg font-bold text-gray-900 dark:text-white">
                         ${item.price}
                       </span>
-                      <div className="flex items-center text-yellow-600 dark:text-yellow-400">
+                      <div className="flex items-center text-yellow-600 dark:text-yellow-400 text-sm">
                         <Coins size={16} className="mr-1" />
                         <span>{item.coinPrice} coins</span>
                       </div>
                     </div>
                   </div>
 
-                  <div className="flex items-center space-x-3">
-                    <div className="flex items-center space-x-2">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-3 space-y-3 sm:space-y-0 mt-2 sm:mt-0">
+                    <div className="flex items-center space-x-2 justify-center">
                       <button
                         onClick={() =>
                           handleQuantityChange(item.id, item.quantity - 1)

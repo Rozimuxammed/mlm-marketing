@@ -1,6 +1,15 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { Users, Coins } from "lucide-react";
+import {
+  DollarSign,
+  Users,
+  CreditCard,
+  Wallet,
+  TrendingUp,
+  Calendar,
+  Coins,
+  Gift,
+} from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import StatCard from "../components/StatCard";
 
@@ -8,36 +17,34 @@ const Dashboard: React.FC = () => {
   const { t } = useTranslation();
   const { user, claimDailyBonus } = useAuth();
 
-  const userData: any = localStorage.getItem("user-data");
-
   const recentActivities = [
     {
       id: 1,
       type: "referral",
-      amount: `+10 ${t("dashboard.coin")}`,
+      description: "New referral joined",
+      amount: "+$25.00",
       time: "2 hours ago",
-      data: "11.06.2025",
     },
     {
       id: 2,
       type: "earning",
-      amount: `+10 ${t("dashboard.coin")}`,
-      time: "at 12:50 AM",
-      data: "10.06.2025",
+      description: "Daily coin bonus claimed",
+      amount: `+${user?.dailyBonus} coins`,
+      time: "5 hours ago",
     },
     {
       id: 3,
       type: "withdrawal",
-      amount: `+10 ${t("dashboard.coin")}`,
-      time: "at 08:20 AM",
-      data: "09.06.2025",
+      description: "Withdrawal processed",
+      amount: "-$100.00",
+      time: "1 day ago",
     },
     {
       id: 4,
       type: "purchase",
-      amount: `+10 ${t("dashboard.coin")}`,
-      time: "at 08:18 PM",
-      data: "08.06.2025",
+      description: "Product purchased with coins",
+      amount: `-${500} coins`,
+      time: "2 days ago",
     },
   ];
 
@@ -64,13 +71,13 @@ const Dashboard: React.FC = () => {
     },
   ];
 
-  // const planExpiryDate = new Date(user?.planExpiry || "");
-  // const daysRemaining = Math.ceil(
-  // (planExpiryDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)
-  // );
+  const planExpiryDate = new Date(user?.planExpiry || "");
+  const daysRemaining = Math.ceil(
+    (planExpiryDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)
+  );
 
-  // const canClaimBonus =
-  //   user && user.lastBonusDate !== new Date().toISOString().split("T")[0];
+  const canClaimBonus =
+    user && user.lastBonusDate !== new Date().toISOString().split("T")[0];
 
   const handleClaimBonus = () => {
     claimDailyBonus();
@@ -82,14 +89,8 @@ const Dashboard: React.FC = () => {
       day: "2-digit",
       month: "2-digit",
       year: "numeric",
-      // hour: "2-digit",
-      // minute: "2-digit",
-      // hour12: false,
-      // timeZone: "Asia/Tashkent", // O'zbekiston vaqti
     };
-    // return new Intl.DateTimeFormat("ru-RU", options);
-    // .format(date)
-    // .replace(",", "")
+    return new Intl.DateTimeFormat("en-US", options).format(date);
   }
 
   return (
@@ -98,19 +99,19 @@ const Dashboard: React.FC = () => {
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 capitalize">
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
               {t("dashboard.welcomeBack")}, {user?.name}! 👋
             </h1>
             <p className="text-gray-600 dark:text-gray-400">
               {t("dashboard.currentPlan")}:{" "}
               <span className="font-semibold text-blue-600 dark:text-blue-400">
-                {user.userTariff}
+                {user?.currentPlan}
               </span>
-              {/* {daysRemaining > 0 && (
+              {daysRemaining > 0 && (
                 <span className="ml-2 text-sm text-gray-500 dark:text-gray-400">
                   ({daysRemaining} {t("dashboard.daysRemaining")})
                 </span>
-              )} */}
+              )}
             </p>
           </div>
           <div className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
@@ -120,66 +121,57 @@ const Dashboard: React.FC = () => {
       </div>
 
       {/* Daily Bonus */}
-      {/* {canClaimBonus && (
-        <div className="bg-gradient-to-r from-yellow-400 to-orange-500 rounded-xl p-6 text-white">
+      {canClaimBonus && (
+        <div className="bg-gradient-to-r from-yellow-400 to-orange-500 dark:from-yellow-500 dark:to-orange-400 rounded-xl p-6 text-white">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
                 <Gift className="text-white" size={24} />
               </div>
               <div>
-                <h3 className="text-lg font-semibold"> */}
-      {/* Daily Bonus Available! */}
-      {/* {t("dashboard.dailyBonusAvailable")}
+                <h3 className="text-lg font-semibold">
+                  {t("dashboard.dailyBonusAvailable")}
                 </h3>
-
                 <p className="text-yellow-100">
-                  {t("dashboard.claimYour")}
-                  {userData?.dailyBonus} {t("dashboard.coinsToday")}
+                  {t("dashboard.claimYour")} {user?.dailyBonus}{" "}
+                  {t("dashboard.coinsToday")}
                 </p>
               </div>
             </div>
             <button
               onClick={handleClaimBonus}
-              className="px-6 py-3 bg-white text-orange-600 font-semibold rounded-lg hover:bg-gray-100 transition-colors"
-            > */}
-      {/* Claim Now */}
-      {/* {t("dashboard.claimNow")} */}
-      {/* </button>
+              className="px-6 py-3 bg-white dark:bg-gray-100 text-orange-600 font-semibold rounded-lg hover:bg-gray-100 dark:hover:bg-gray-200 transition-colors"
+            >
+              {t("dashboard.claimNow")}
+            </button>
           </div>
         </div>
-      )} */}
+      )}
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
         <StatCard
           title={t("dashboard.yourCoin")}
-          value={user?.coin}
+          value={user?.coins.toLocaleString() || "0"}
           icon={Coins}
           color="blue"
           subtitle={`+${user?.coin} ${t("dashboard.dailyBonus")}`}
         />
-        {/* <StatCard
-          title={t("dashboard.totalEarnings")}
-          value={`$${user?.totalEarnings?.toFixed(2)}`}
-          icon={DollarSign}
-          color="green"
-        /> */}
         <StatCard
           title={t("dashboard.totalReferrals")}
-          value={userData?.totalReferrals || 0}
+          value={user?.totalReferrals || 0}
           icon={Users}
           color="purple"
         />
-        {/* <StatCard
+        <StatCard
           title={t("dashboard.currentBalance")}
-          value={`$${user?.balance?.toFixed(2)}`}
+          value={`$${user?.balance.toFixed(2)}`}
           icon={Wallet}
           color="orange"
-        /> */}
+        />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1">
         {/* Recent Activity */}
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
           <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
@@ -193,10 +185,10 @@ const Dashboard: React.FC = () => {
               >
                 <div className="flex-1">
                   <p className="text-sm font-medium text-gray-900 dark:text-white">
-                    {t("dashboard.bonusHistory")} {activity.data}
+                    {activity.description}
                   </p>
                   <p className="text-xs text-gray-500 dark:text-gray-400">
-                    {activity?.time}
+                    {activity.time}
                   </p>
                 </div>
                 <span

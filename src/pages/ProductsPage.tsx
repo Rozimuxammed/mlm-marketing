@@ -10,88 +10,6 @@ const ProductsPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [products, setProducts] = useState<any[]>([]);
-  // const products = [
-  //   {
-  //     id: "1",
-  //     name: "Digital Marketing Masterclass",
-  //     description:
-  //       "Complete course on digital marketing strategies and techniques",
-  //     price: 99.99,
-  //     coinPrice: 2000,
-  //     image:
-  //       "https://images.pexels.com/photos/265087/pexels-photo-265087.jpeg?auto=compress&cs=tinysrgb&w=400",
-  //     category: "courses",
-  //     rating: 4.8,
-  //     reviews: 156,
-  //     featured: true,
-  //   },
-  //   {
-  //     id: "2",
-  //     name: "Social Media Templates Pack",
-  //     description:
-  //       "Professional templates for Instagram, Facebook, and Twitter",
-  //     price: 29.99,
-  //     coinPrice: 600,
-  //     image:
-  //       "https://images.pexels.com/photos/267350/pexels-photo-267350.jpeg?auto=compress&cs=tinysrgb&w=400",
-  //     category: "templates",
-  //     rating: 4.6,
-  //     reviews: 89,
-  //     featured: false,
-  //   },
-  //   {
-  //     id: "3",
-  //     name: "SEO Optimization Tool",
-  //     description: "Advanced tool for website SEO analysis and optimization",
-  //     price: 149.99,
-  //     coinPrice: 3000,
-  //     image:
-  //       "https://images.pexels.com/photos/270348/pexels-photo-270348.jpeg?auto=compress&cs=tinysrgb&w=400",
-  //     category: "tools",
-  //     rating: 4.9,
-  //     reviews: 234,
-  //     featured: true,
-  //   },
-  //   {
-  //     id: "4",
-  //     name: "Email Marketing Guide",
-  //     description: "Comprehensive guide to effective email marketing campaigns",
-  //     price: 39.99,
-  //     coinPrice: 800,
-  //     image:
-  //       "https://images.pexels.com/photos/590016/pexels-photo-590016.jpg?auto=compress&cs=tinysrgb&w=400",
-  //     category: "digital",
-  //     rating: 4.7,
-  //     reviews: 112,
-  //     featured: false,
-  //   },
-  //   {
-  //     id: "5",
-  //     name: "Brand Identity Package",
-  //     description: "Complete brand identity design service for your business",
-  //     price: 299.99,
-  //     coinPrice: 6000,
-  //     image:
-  //       "https://images.pexels.com/photos/196644/pexels-photo-196644.jpeg?auto=compress&cs=tinysrgb&w=400",
-  //     category: "services",
-  //     rating: 4.9,
-  //     reviews: 67,
-  //     featured: true,
-  //   },
-  //   {
-  //     id: "6",
-  //     name: "Content Creation Toolkit",
-  //     description: "Essential tools and resources for content creators",
-  //     price: 79.99,
-  //     coinPrice: 1600,
-  //     image:
-  //       "https://images.pexels.com/photos/265087/pexels-photo-265087.jpeg?auto=compress&cs=tinysrgb&w=400",
-  //     category: "tools",
-  //     rating: 4.5,
-  //     reviews: 198,
-  //     featured: false,
-  //   },
-  // ];
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -105,6 +23,7 @@ const ProductsPage: React.FC = () => {
     };
     fetchProducts();
   }, []);
+
 
   const filteredProducts = products?.filter((product) => {
     const matchesSearch =

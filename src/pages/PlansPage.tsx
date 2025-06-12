@@ -16,11 +16,11 @@ const PlansPage: React.FC = () => {
       icon: Zap,
       color: "blue",
       features: [
-        "Up to 10 referrals per month",
-        "Basic earning opportunities",
-        "Email support",
-        "Basic analytics",
-        "Mobile app access",
+        t("plans.basic.features.referrals"),
+        t("plans.basic.features.earnings"),
+        t("plans.basic.features.support"),
+        t("plans.basic.features.analytics"),
+        t("plans.basic.features.mobile"),
       ],
     },
     {
@@ -31,12 +31,12 @@ const PlansPage: React.FC = () => {
       color: "purple",
       popular: true,
       features: [
-        "Unlimited referrals",
-        "Premium earning opportunities",
-        "Priority support",
-        "Advanced analytics",
-        "Mobile app access",
-        "Exclusive bonuses",
+        t("plans.premium.features.referrals"),
+        t("plans.premium.features.earnings"),
+        t("plans.premium.features.support"),
+        t("plans.premium.features.analytics"),
+        t("plans.premium.features.mobile"),
+        t("plans.premium.features.bonuses"),
       ],
     },
     {
@@ -46,19 +46,18 @@ const PlansPage: React.FC = () => {
       icon: Star,
       color: "orange",
       features: [
-        "Everything in Premium",
-        "Team management",
-        "API access",
-        "Custom integrations",
-        "Dedicated account manager",
-        "White-label options",
+        t("plans.enterprise.features.premium"),
+        t("plans.enterprise.features.team"),
+        t("plans.enterprise.features.api"),
+        t("plans.enterprise.features.integrations"),
+        t("plans.enterprise.features.manager"),
+        t("plans.enterprise.features.whitelabel"),
       ],
     },
   ];
 
   const handleSelectPlan = (planId: string) => {
     setSelectedPlan(planId);
-    // Here you would integrate with InterKassa payment system
     console.log("Selected plan:", planId);
   };
 
@@ -98,36 +97,39 @@ const PlansPage: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
             {t("plans.choosePlan")}
           </h1>
-          <p className="text-gray-600 max-w-2xl mx-auto">
-            Choose the perfect plan for your marketing needs. All plans include
-            our core features with different limits and bonuses.
+          <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            {t("plans.choosePlanDescription")}
           </p>
         </div>
       </div>
 
       {/* Current Plan Info */}
       {user?.currentPlan && (
-        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200 p-6">
+        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900 dark:to-indigo-900 rounded-xl border border-blue-200 dark:border-blue-700 p-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
                 <Crown className="text-white" size={20} />
               </div>
               <div>
-                <h3 className="font-semibold text-blue-900">
+                <h3 className="font-semibold text-blue-900 dark:text-white">
                   {t("plans.currentPlan")}
                 </h3>
-                <p className="text-blue-700">{user.currentPlan}</p>
+                <p className="text-blue-700 dark:text-blue-300">
+                  {user.currentPlan}
+                </p>
               </div>
             </div>
             <div className="text-right">
-              <p className="text-sm text-blue-600">Expires on</p>
-              <p className="font-semibold text-blue-900">
+              <p className="text-sm text-blue-600 dark:text-blue-300">
+                {t("plans.expiresOn")}
+              </p>
+              <p className="font-semibold text-blue-900 dark:text-white">
                 {new Date(user.planExpiry).toLocaleDateString()}
               </p>
             </div>
@@ -141,15 +143,15 @@ const PlansPage: React.FC = () => {
           const Icon = plan.icon;
           const colors = getColorClasses(plan.color);
           const isCurrentPlan =
-            user?.currentPlan?.toLowerCase() === plan.name.toLowerCase();
+            user?.currentPlan.toLowerCase() === plan.name.toLowerCase();
 
           return (
             <div
               key={plan.id}
-              className={`relative bg-white rounded-xl shadow-sm border-2 p-6 transition-all hover:shadow-md ${
+              className={`relative bg-white dark:bg-gray-900 rounded-xl shadow-sm border-2 p-6 transition-all hover:shadow-md ${
                 plan.popular
-                  ? "border-purple-200 ring-2 ring-purple-100"
-                  : "border-gray-200"
+                  ? "border-purple-200 dark:border-purple-500 ring-2 ring-purple-100 dark:ring-purple-400/30"
+                  : "border-gray-200 dark:border-gray-700"
               }`}
             >
               {plan.popular && (
@@ -166,14 +168,16 @@ const PlansPage: React.FC = () => {
                 >
                   <Icon className={colors.icon} size={24} />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
                   {plan.name}
                 </h3>
                 <div className="mb-4">
-                  <span className="text-3xl font-bold text-gray-900">
+                  <span className="text-3xl font-bold text-gray-900 dark:text-white">
                     ${plan.price}
                   </span>
-                  <span className="text-gray-500">/{t("plans.monthly")}</span>
+                  <span className="text-gray-500 dark:text-gray-300">
+                    /{t("plans.monthly")}
+                  </span>
                 </div>
               </div>
 
@@ -184,7 +188,9 @@ const PlansPage: React.FC = () => {
                       className="text-green-500 flex-shrink-0 mt-0.5"
                       size={16}
                     />
-                    <span className="text-sm text-gray-700">{feature}</span>
+                    <span className="text-sm text-gray-700 dark:text-gray-300">
+                      {feature}
+                    </span>
                   </li>
                 ))}
               </ul>
@@ -194,11 +200,11 @@ const PlansPage: React.FC = () => {
                 disabled={isCurrentPlan}
                 className={`w-full py-3 px-4 rounded-lg font-semibold text-white transition-colors ${
                   isCurrentPlan
-                    ? "bg-gray-400 cursor-not-allowed"
+                    ? "bg-gray-400 dark:bg-gray-600 cursor-not-allowed"
                     : colors.button
                 }`}
               >
-                {isCurrentPlan ? "Current Plan" : t("plans.selectPlan")}
+                {isCurrentPlan ? t("plans.currentPlan") : t("plans.selectPlan")}
               </button>
             </div>
           );
@@ -206,53 +212,48 @@ const PlansPage: React.FC = () => {
       </div>
 
       {/* Payment Integration Notice */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+      <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
         <div className="flex items-start space-x-3">
           <CreditCard className="text-blue-600 flex-shrink-0 mt-1" size={20} />
           <div>
-            <h3 className="font-medium text-gray-900 mb-2">
-              Secure Payment Processing
+            <h3 className="font-medium text-gray-900 dark:text-white mb-2">
+              {t("plans.securePayment")}
             </h3>
-            <p className="text-sm text-gray-600">
-              All payments are processed securely through InterKassa. We support
-              major credit cards, bank transfers, and digital wallets. Your
-              payment information is encrypted and never stored on our servers.
+            <p className="text-sm text-gray-600 dark:text-gray-300">
+              {t("plans.securePaymentDescription")}
             </p>
           </div>
         </div>
       </div>
 
       {/* FAQ Section */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
-          Frequently Asked Questions
+      <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+          {t("plans.faq.title")}
         </h3>
         <div className="space-y-4">
           <div>
-            <h4 className="font-medium text-gray-900">
-              Can I change my plan anytime?
+            <h4 className="font-medium text-gray-900 dark:text-white">
+              {t("plans.faq.changePlan")}
             </h4>
-            <p className="text-sm text-gray-600 mt-1">
-              Yes, you can upgrade or downgrade your plan at any time. Changes
-              will be reflected in your next billing cycle.
+            <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
+              {t("plans.faq.changePlanAnswer")}
             </p>
           </div>
           <div>
-            <h4 className="font-medium text-gray-900">
-              What happens if I cancel my subscription?
+            <h4 className="font-medium text-gray-900 dark:text-white">
+              {t("plans.faq.cancelSubscription")}
             </h4>
-            <p className="text-sm text-gray-600 mt-1">
-              You can cancel anytime. You'll continue to have access until the
-              end of your current billing period.
+            <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
+              {t("plans.faq.cancelSubscriptionAnswer")}
             </p>
           </div>
           <div>
-            <h4 className="font-medium text-gray-900">
-              Are there any setup fees?
+            <h4 className="font-medium text-gray-900 dark:text-white">
+              {t("plans.faq.setupFees")}
             </h4>
-            <p className="text-sm text-gray-600 mt-1">
-              No, there are no setup fees. You only pay the monthly subscription
-              fee for your chosen plan.
+            <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
+              {t("plans.faq.setupFeesAnswer")}
             </p>
           </div>
         </div>

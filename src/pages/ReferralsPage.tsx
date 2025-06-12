@@ -112,14 +112,14 @@ const ReferralsPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+   <div className="space-y-6">
       {/* Header */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
           {t("common.referrals")}
         </h1>
-        <p className="text-gray-600">
-          Invite friends and earn bonuses for each successful referral
+        <p className="text-gray-600 dark:text-gray-400">
+          {t("referrals.inviteFriends")}
         </p>
       </div>
 
@@ -153,22 +153,22 @@ const ReferralsPage: React.FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Referral Link */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
             {t("referrals.referralLink")}
           </h2>
 
           <div className="space-y-4">
-            <div className="flex items-center space-x-2 p-3 bg-gray-50 rounded-lg border">
+            <div className="flex items-center space-x-2 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg border dark:border-gray-600">
               <input
                 type="text"
                 value={referralLink}
                 readOnly
-                className="flex-1 bg-transparent text-sm text-gray-700 focus:outline-none"
+                className="flex-1 bg-transparent text-sm text-gray-700 dark:text-gray-100 focus:outline-none"
               />
               <button
                 onClick={copyReferralLink}
-                className="flex items-center px-3 py-1.5 text-sm font-medium text-blue-600 hover:text-blue-500 transition-colors"
+                className="flex items-center px-3 py-1.5 text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 transition-colors"
               >
                 {copiedLink ? (
                   <>
@@ -204,42 +204,46 @@ const ReferralsPage: React.FC = () => {
         </div>
 
         {/* Referral Stats */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">
-            Referral Performance
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+            {t("referrals.performance")}
           </h2>
 
           <div className="space-y-4">
-            <div className="flex items-center justify-between p-4 bg-green-50 rounded-lg">
+            <div className="flex items-center justify-between p-4 bg-green-50 dark:bg-green-900 rounded-lg">
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
                   <CheckCircle className="text-white" size={16} />
                 </div>
                 <div>
-                  <p className="font-medium text-gray-900">Paid Referrals</p>
-                  <p className="text-sm text-gray-600">
-                    {paidReferrals} friends
+                  <p className="font-medium text-gray-900 dark:text-white">
+                    {t("referrals.paidReferrals")}
+                  </p>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                    {t("referrals.friendsCount", { count: paidReferrals })}
                   </p>
                 </div>
               </div>
-              <span className="text-lg font-bold text-green-600">
+              <span className="text-lg font-bold text-green-600 dark:text-green-400">
                 ${(paidReferrals * 50).toFixed(2)}
               </span>
             </div>
 
-            <div className="flex items-center justify-between p-4 bg-orange-50 rounded-lg">
+            <div className="flex items-center justify-between p-4 bg-orange-50 dark:bg-orange-900 rounded-lg">
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center">
                   <Clock className="text-white" size={16} />
                 </div>
                 <div>
-                  <p className="font-medium text-gray-900">Pending Referrals</p>
-                  <p className="text-sm text-gray-600">
-                    {pendingReferrals} friends
+                  <p className="font-medium text-gray-900 dark:text-white">
+                    {t("referrals.pendingReferrals")}
+                  </p>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                    {t("referrals.friendsCount", { count: pendingReferrals })}
                   </p>
                 </div>
               </div>
-              <span className="text-lg font-bold text-orange-600">
+              <span className="text-lg font-bold text-orange-600 dark:text-orange-400">
                 ${(pendingReferrals * 50).toFixed(2)}
               </span>
             </div>
@@ -248,40 +252,47 @@ const ReferralsPage: React.FC = () => {
       </div>
 
       {/* Referral Friends List */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-6">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+        <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">
           {t("referrals.invitedFriends")}
         </h2>
 
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-gray-200">
-                <th className="text-left py-3 px-4 font-medium text-gray-500">
+              <tr className="border-b border-gray-200 dark:border-gray-700">
+                <th className="text-left py-3 px-4 font-medium text-gray-500 dark:text-gray-400">
                   {t("referrals.friendName")}
                 </th>
-                <th className="text-left py-3 px-4 font-medium text-gray-500">
+                <th className="text-left py-3 px-4 font-medium text-gray-500 dark:text-gray-400">
                   {t("referrals.joinDate")}
                 </th>
-                <th className="text-left py-3 px-4 font-medium text-gray-500">
+                <th className="text-left py-3 px-4 font-medium text-gray-500 dark:text-gray-400">
                   {t("referrals.paymentStatus")}
                 </th>
-                <th className="text-right py-3 px-4 font-medium text-gray-500">
+                <th className="text-right py-3 px-4 font-medium text-gray-500 dark:text-gray-400">
                   {t("referrals.bonus")}
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
               {referralFriends.map((friend) => (
-                <tr key={friend.id} className="hover:bg-gray-50">
+                <tr
+                  key={friend.id}
+                  className="hover:bg-gray-50 dark:hover:bg-gray-700"
+                >
                   <td className="py-4 px-4">
                     <div>
-                      <p className="font-medium text-gray-900">{friend.name}</p>
-                      <p className="text-sm text-gray-500">{friend.email}</p>
+                      <p className="font-medium text-gray-900 dark:text-white">
+                        {friend.name}
+                      </p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        {friend.email}
+                      </p>
                     </div>
                   </td>
                   <td className="py-4 px-4">
-                    <span className="text-sm text-gray-700">
+                    <span className="text-sm text-gray-700 dark:text-gray-300">
                       {new Date(friend.joinDate).toLocaleDateString()}
                     </span>
                   </td>
@@ -289,8 +300,8 @@ const ReferralsPage: React.FC = () => {
                     <span
                       className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                         friend.status === "paid"
-                          ? "bg-green-100 text-green-800"
-                          : "bg-orange-100 text-orange-800"
+                          ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300"
+                          : "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300"
                       }`}
                     >
                       {friend.status === "paid" ? (
@@ -310,8 +321,8 @@ const ReferralsPage: React.FC = () => {
                     <span
                       className={`text-sm font-semibold ${
                         friend.status === "paid"
-                          ? "text-green-600"
-                          : "text-orange-600"
+                          ? "text-green-600 dark:text-green-400"
+                          : "text-orange-600 dark:text-orange-400"
                       }`}
                     >
                       ${friend.bonus.toFixed(2)}
