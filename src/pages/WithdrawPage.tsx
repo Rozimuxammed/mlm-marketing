@@ -93,11 +93,7 @@ const WithdrawPage: React.FC = () => {
           icon={Wallet}
           color="blue"
         />
-        <StatCard
-          title="This Month"
-          icon={Calendar}
-          color="purple"
-        />
+        <StatCard title="This Month" icon={Calendar} color="purple" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -127,7 +123,7 @@ const WithdrawPage: React.FC = () => {
                 />
               </div>
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                Minimum withdrawal: $10.00 
+                Minimum withdrawal: $10.00
               </p>
             </div>
 
