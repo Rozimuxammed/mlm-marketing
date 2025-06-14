@@ -18,7 +18,7 @@
     "share": "分享"
   },
   "auth": {
-    "welcome": "欢迎来到 Tarmoqli",
+    "welcome": "欢迎来到 MLM Platform",
     "subtitle": "您的营销平台",
     "email": "邮箱",
     "password": "密码",
@@ -30,14 +30,26 @@
   },
   "dashboard": {
     "welcomeBack": "欢迎回来",
-    "totalEarnings": "总收益",
-    "todayEarnings": "今日收益",
-    "totalReferrals": "总推荐数",
+    "yourCoin": "您的金币",
+    "totalEarnings": "总收入",
+    "todayEarnings": "今日收入",
+    "totalReferrals": "总推荐人数",
     "currentBalance": "当前余额",
-    "currentPlan": "当前计划",
-    "daysRemaining": "天剩余",
+    "currentPlan": "当前套餐",
+    "daysRemaining": "剩余天数",
     "recentActivity": "最近活动",
-    "quickActions": "快速操作"
+    "quickActions": "快捷操作",
+    "dailyBonus": "每日奖励",
+    "browseProducts": "浏览产品",
+    "inviteFriends": "邀请朋友",
+    "withdrawFunds": "提现",
+    "upgradePlan": "升级套餐",
+    "bonusHistory": "您的奖励已到账",
+    "coin": "金币",
+    "dailyBonusAvailable": "每日奖励可领取！",
+    "claimYour": "领取您的",
+    "coinsToday": "金币吧",
+    "claimNow": "立即领取"
   },
   "profile": {
     "personalInfo": "个人信息",

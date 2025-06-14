@@ -1,97 +1,58 @@
-import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Check, Crown, Zap, Star, CreditCard } from "lucide-react";
-import { useAuth } from "../contexts/AuthContext";
+import {
+  Star,
+  CoinsIcon,
+  Coins,
+  Calendar,
+  Pen,
+  LanguagesIcon,
+  User,
+  PointerOffIcon,
+} from "lucide-react";
+import { useEffect, useState } from "react";
 
 const PlansPage: React.FC = () => {
   const { t } = useTranslation();
-  const { user } = useAuth();
-  const [selectedPlan, setSelectedPlan] = useState("");
+  const [plans, setPlans] = useState([]);
+  const [user, setUser] = useState();
 
-  const plans = [
-    {
-      id: "basic",
-      name: t("plans.basic"),
-      price: 29,
-      icon: Zap,
-      color: "blue",
-      features: [
-        "Up to 10 referrals per month",
-        "Basic earning opportunities",
-        "Email support",
-        "Basic analytics",
-        "Mobile app access",
-      ],
-    },
-    {
-      id: "premium",
-      name: t("plans.premium"),
-      price: 59,
-      icon: Crown,
-      color: "purple",
-      popular: true,
-      features: [
-        "Unlimited referrals",
-        "Premium earning opportunities",
-        "Priority support",
-        "Advanced analytics",
-        "Mobile app access",
-        "Exclusive bonuses",
-      ],
-    },
-    {
-      id: "enterprise",
-      name: t("plans.enterprise"),
-      price: 99,
-      icon: Star,
-      color: "orange",
-      features: [
-        "Everything in Premium",
-        "Team management",
-        "API access",
-        "Custom integrations",
-        "Dedicated account manager",
-        "White-label options",
-      ],
-    },
-  ];
+  useEffect(() => {
+    const getPlans = async () => {
+      const req = await fetch("https://mlm-backend.pixl.uz/tariff");
+      if (req.status === 200) {
+        const res = await req.json();
+        setPlans(res);
+      } else {
+        throw new Error(req.message || "Fetchda xatolik");
+      }
+    };
+    getPlans();
+  }, []);
 
-  const handleSelectPlan = (planId: string) => {
-    setSelectedPlan(planId);
-    // Here you would integrate with InterKassa payment system
-    console.log("Selected plan:", planId);
-  };
+  const buyPlan = async (id) => {
+    const token = localStorage.getItem("token");
 
-  const getColorClasses = (color: string) => {
-    switch (color) {
-      case "blue":
-        return {
-          bg: "bg-blue-50",
-          border: "border-blue-200",
-          icon: "text-blue-600",
-          button: "bg-blue-600 hover:bg-blue-700",
-        };
-      case "purple":
-        return {
-          bg: "bg-purple-50",
-          border: "border-purple-200",
-          icon: "text-purple-600",
-          button: "bg-purple-600 hover:bg-purple-700",
-        };
-      case "orange":
-        return {
-          bg: "bg-orange-50",
-          border: "border-orange-200",
-          icon: "text-orange-600",
-          button: "bg-orange-600 hover:bg-orange-700",
-        };
-      default:
-        return {
-          bg: "bg-gray-50",
-          border: "border-gray-200",
-          icon: "text-gray-600",
-          button: "bg-gray-600 hover:bg-gray-700",
-        };
+    const order = {
+      tariff_id: id,
+    };
+
+    const req = await fetch("https://mlm-backend.pixl.uz/orders", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(order),
+    });
+
+    if (req.status === 200) {
+      const res = await req.json();
+      console.log(res);
+      alert("Sotib olindi!");
+    } else {
+      const err = await req.text();
+      console.error(err);
+      throw new Error(err || "Xatolik mavjud");
     }
   };
 
@@ -110,160 +71,105 @@ const PlansPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Current Plan Info */}
-      {user?.currentPlan && (
-        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900 dark:to-indigo-900 rounded-xl border border-blue-200 dark:border-blue-700 p-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-                <Crown className="text-white" size={20} />
-              </div>
-              <div>
-                <h3 className="font-semibold text-blue-900 dark:text-white">
-                  {t("plans.currentPlan")}
-                </h3>
-                <p className="text-blue-700 dark:text-blue-300">
-                  {user.currentPlan}
-                </p>
-              </div>
-            </div>
-            <div className="text-right">
-              <p className="text-sm text-blue-600 dark:text-blue-300">
-                Expires on
-              </p>
-              <p className="font-semibold text-blue-900 dark:text-white">
-                {new Date(user.planExpiry).toLocaleDateString()}
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Plans Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {plans.map((plan) => {
-          const Icon = plan.icon;
-          const colors = getColorClasses(plan.color);
-          const isCurrentPlan =
-            user?.currentPlan.toLowerCase() === plan.name.toLowerCase();
-
-          return (
-            <div
-              key={plan.id}
-              className={`relative bg-white dark:bg-gray-900 rounded-xl shadow-sm border-2 p-6 transition-all hover:shadow-md ${
-                plan.popular
-                  ? "border-purple-200 dark:border-purple-500 ring-2 ring-purple-100 dark:ring-purple-400/30"
-                  : "border-gray-200 dark:border-gray-700"
-              }`}
-            >
-              {plan.popular && (
-                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                  <span className="bg-purple-600 text-white px-3 py-1 rounded-full text-xs font-medium">
-                    {t("plans.popular")}
-                  </span>
-                </div>
-              )}
-
-              <div className="text-center mb-6">
+        {plans &&
+          plans.map(
+            ({
+              coin,
+              createdAt,
+              dailyProfit,
+              id,
+              photo_url,
+              referral_bonus,
+              term,
+              translations,
+            }) => {
+              return (
                 <div
-                  className={`w-12 h-12 ${colors.bg} rounded-lg flex items-center justify-center mx-auto mb-4`}
+                  key={id}
+                  className="w-[400px] overflow-hidden min-h-[500px] border-2 border-blue-700 h-auto rounded-lg bg-white"
                 >
-                  <Icon className={colors.icon} size={24} />
+                  <img
+                    className="w-full h-60 object-cover mb-3"
+                    src={photo_url}
+                    alt="image"
+                  />
+                  <div className="p-4 flex flex-col gap-2">
+                    <p className="flex items-center gap-2 text-2xl mb-4">
+                      <span className="font-bold text-2xl">DailyProfit:</span>
+                      <span className="font-bold">{dailyProfit}</span>{" "}
+                      <CoinsIcon className="text-yellow-400" />
+                    </p>
+                    <p className="flex items-center gap-2">
+                      <b>Coin:</b> {coin} <Coins className="text-yellow-400" />
+                    </p>
+                    <p className="flex items-center gap-2">
+                      <b>Referaldan olinadigan bonus:</b> {referral_bonus}{" "}
+                      <Coins className="text-yellow-400" />
+                    </p>
+                    <p className="flex items-center gap-2">
+                      <b>Term:</b> {term} <Coins className="text-yellow-400" />
+                    </p>
+                    <p className="flex items-center gap-2">
+                      <b>Muddati: </b>
+                      {new Date(createdAt).toLocaleDateString("uz-UZ")}
+                      <Calendar className="w-4 h-5 text-red-700" />
+                    </p>
+                    {translations?.map(
+                      ({
+                        description,
+                        features,
+                        id,
+                        language,
+                        longDescription,
+                        name,
+                        usage,
+                      }) => {
+                        return (
+                          <div className="flex flex-col gap-2" key={id}>
+                            <p className="flex items-center gap-2">
+                              <b>Description: </b>
+                              {description}
+                              <Pen className="w-3 h-3 text-yellow-500" />
+                            </p>
+                            <p className="flex items-center gap-2">
+                              <b>Features: </b>
+                              {features}{" "}
+                              <Star className="w-3 h-3 text-blue-800" />
+                            </p>
+                            <p className="flex items-center gap-2">
+                              <b>Language: </b>
+                              {language} <LanguagesIcon className="w-4 h-4" />
+                            </p>
+                            <p className="flex items-center gap-2">
+                              <b>LongDescription: </b>
+                              {longDescription}
+                              <Pen className="w-3 h-3 text-yellow-500" />
+                            </p>
+                            <p className="flex items-center gap-2">
+                              <b>Name: </b>
+                              {name} <User className="w-4 h-4" />
+                            </p>
+                            <p className="flex items-center gap-2">
+                              <b>Usage: </b>
+                              {usage} <PointerOffIcon className="w-3 h-4" />
+                            </p>
+                          </div>
+                        );
+                      }
+                    )}
+                    <button
+                      onClick={() => buyPlan(id)}
+                      className="w-full hover:bg-blue-700 duration-300 hover:text-white text-black my-5 border py-2 rounded-xl"
+                    >
+                      Select plan
+                    </button>
+                  </div>
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-                  {plan.name}
-                </h3>
-                <div className="mb-4">
-                  <span className="text-3xl font-bold text-gray-900 dark:text-white">
-                    ${plan.price}
-                  </span>
-                  <span className="text-gray-500 dark:text-gray-300">
-                    /{t("plans.monthly")}
-                  </span>
-                </div>
-              </div>
-
-              <ul className="space-y-3 mb-6">
-                {plan.features.map((feature, index) => (
-                  <li key={index} className="flex items-start space-x-3">
-                    <Check
-                      className="text-green-500 flex-shrink-0 mt-0.5"
-                      size={16}
-                    />
-                    <span className="text-sm text-gray-700 dark:text-gray-300">
-                      {feature}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-
-              <button
-                onClick={() => handleSelectPlan(plan.id)}
-                disabled={isCurrentPlan}
-                className={`w-full py-3 px-4 rounded-lg font-semibold text-white transition-colors ${
-                  isCurrentPlan
-                    ? "bg-gray-400 dark:bg-gray-600 cursor-not-allowed"
-                    : colors.button
-                }`}
-              >
-                {isCurrentPlan ? "Current Plan" : t("plans.selectPlan")}
-              </button>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Payment Integration Notice */}
-      <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
-        <div className="flex items-start space-x-3">
-          <CreditCard className="text-blue-600 flex-shrink-0 mt-1" size={20} />
-          <div>
-            <h3 className="font-medium text-gray-900 dark:text-white mb-2">
-              Secure Payment Processing
-            </h3>
-            <p className="text-sm text-gray-600 dark:text-gray-300">
-              All payments are processed securely through InterKassa. We support
-              major credit cards, bank transfers, and digital wallets. Your
-              payment information is encrypted and never stored on our servers.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* FAQ Section */}
-      <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-          Frequently Asked Questions
-        </h3>
-        <div className="space-y-4">
-          <div>
-            <h4 className="font-medium text-gray-900 dark:text-white">
-              Can I change my plan anytime?
-            </h4>
-            <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
-              Yes, you can upgrade or downgrade your plan at any time. Changes
-              will be reflected in your next billing cycle.
-            </p>
-          </div>
-          <div>
-            <h4 className="font-medium text-gray-900 dark:text-white">
-              What happens if I cancel my subscription?
-            </h4>
-            <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
-              You can cancel anytime. You'll continue to have access until the
-              end of your current billing period.
-            </p>
-          </div>
-          <div>
-            <h4 className="font-medium text-gray-900 dark:text-white">
-              Are there any setup fees?
-            </h4>
-            <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
-              No, there are no setup fees. You only pay the monthly subscription
-              fee for your chosen plan.
-            </p>
-          </div>
-        </div>
+              );
+            }
+          )}
       </div>
     </div>
   );

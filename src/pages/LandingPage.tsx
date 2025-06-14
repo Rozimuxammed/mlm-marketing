@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
@@ -16,75 +16,74 @@ import {
 import { useTheme } from "../contexts/ThemeContext";
 import Navbar from "../components/Navbar";
 
-const LandingPage = () => {
+const LandingPage: React.FC = () => {
   const { t } = useTranslation();
   const { isDarkMode } = useTheme();
 
   const features = [
     {
       icon: Coins,
-      title: t("landing.features.earn_coins.title"),
-      description: t("landing.features.earn_coins.description"),
+      title: "Earn Coins Daily",
+      description: "Get daily coin bonuses based on your subscription plan",
     },
     {
       icon: Users,
-      title: t("landing.features.referral.title"),
-      description: t("landing.features.referral.description"),
+      title: "Referral System",
+      description:
+        "Invite friends and earn bonuses for each successful referral",
     },
     {
       icon: TrendingUp,
-      title: t("landing.features.track_earnings.title"),
-      description: t("landing.features.track_earnings.description"),
+      title: "Track Earnings",
+      description:
+        "Monitor your daily, monthly, and total earnings in real-time",
     },
     {
       icon: Shield,
-      title: t("landing.features.secure_platform.title"),
-      description: t("landing.features.secure_platform.description"),
+      title: "Secure Platform",
+      description:
+        "Your data and transactions are protected with enterprise-grade security",
     },
     {
       icon: Globe,
-      title: t("landing.features.multi_language.title"),
-      description: t("landing.features.multi_language.description"),
+      title: "Multi-Language",
+      description: "Available in 7 languages to serve users worldwide",
     },
     {
       icon: Gift,
-      title: t("landing.features.premium_products.title"),
-      description: t("landing.features.premium_products.description"),
+      title: "Premium Products",
+      description: "Access exclusive products and services with your coins",
     },
   ];
 
   const plans = [
     {
-      name: t("landing.plans.basic.name"),
+      name: "Basic",
       price: 29,
       coinBonus: 50,
-      features: [
-        t("landing.plans.basic.features.0"),
-        t("landing.plans.basic.features.1"),
-        t("landing.plans.basic.features.2"),
-      ],
+      features: ["50 coins daily", "Basic products access", "Email support"],
     },
     {
-      name: t("landing.plans.premium.name"),
+      name: "Premium",
       price: 59,
       coinBonus: 100,
       features: [
-        t("landing.plans.premium.features.0"),
-        t("landing.plans.premium.features.1"),
-        t("landing.plans.premium.features.2"),
-        t("landing.plans.premium.features.3"),
+        "100 coins daily",
+        "Premium products access",
+        "Priority support",
+        "Exclusive bonuses",
       ],
       popular: true,
     },
     {
-      name: t("landing.plans.enterprise.name"),
+      name: "Enterprise",
       price: 99,
       coinBonus: 200,
       features: [
-        t("landing.plans.enterprise.features.0"),
-        t("landing.plans.enterprise.features.1"),
-        t("landing.plans.enterprise.features.2"),
-        t("landing.plans.enterprise.features.3"),
+        "200 coins daily",
+        "All products access",
+        "Dedicated support",
+        "Custom features",
       ],
     },
   ];
@@ -97,28 +96,29 @@ const LandingPage = () => {
         {/* Hero Section */}
         <section className="relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-800"></div>
-          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
             <div className="text-center">
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
-                {t("landing.hero.title")}{" "}
-                <span className="text-yellow-400">MLM PLATFORM</span>
+              <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
+                Welcome to <span className="text-yellow-400">MLM PLATFORM</span>
               </h1>
-              <p className="text-base sm:text-lg md:text-xl text-blue-100 mb-8 max-w-3xl mx-auto">
-                {t("landing.hero.description")}
+              <p className="text-xl md:text-2xl text-blue-100 mb-8 max-w-3xl mx-auto">
+                The ultimate marketing platform where you earn coins daily,
+                refer friends, and access premium products with our custom
+                currency system.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link
                   to="/register"
-                  className="inline-flex items-center px-6 py-3 sm:px-8 sm:py-4 bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-semibold rounded-lg transition-colors text-sm sm:text-base"
+                  className="inline-flex items-center px-8 py-4 bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-semibold rounded-lg transition-colors"
                 >
-                  {t("landing.hero.get_started")}
+                  Get Started
                   <ArrowRight className="ml-2" size={20} />
                 </Link>
                 <Link
                   to="/login"
-                  className="inline-flex items-center px-6 py-3 sm:px-8 sm:py-4 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-lg backdrop-blur-sm transition-colors text-sm sm:text-base"
+                  className="inline-flex items-center px-8 py-4 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-lg backdrop-blur-sm transition-colors"
                 >
-                  {t("landing.hero.sign_in")}
+                  Sign In
                 </Link>
               </div>
             </div>
@@ -126,24 +126,25 @@ const LandingPage = () => {
         </section>
 
         {/* Features Section */}
-        <section className="py-16 sm:py-24 bg-gray-50 dark:bg-gray-800">
+        <section className="py-24 bg-gray-50 dark:bg-gray-800">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-12 sm:mb-16">
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-                {t("landing.features.title")}
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                Why Choose MLM PLATFORM?
               </h2>
-              <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-                {t("landing.features.description")}
+              <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+                Discover the features that make our platform the best choice for
+                earning and growing your income.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {features.map((feature, index) => {
                 const Icon = feature.icon;
                 return (
                   <div
                     key={index}
-                    className="bg-white dark:bg-gray-900 p-6 sm:p-8 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow"
+                    className="bg-white dark:bg-gray-900 p-8 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow"
                   >
                     <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center mb-4">
                       <Icon
@@ -151,10 +152,10 @@ const LandingPage = () => {
                         size={24}
                       />
                     </div>
-                    <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
                       {feature.title}
                     </h3>
-                    <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300">
+                    <p className="text-gray-600 dark:text-gray-300">
                       {feature.description}
                     </p>
                   </div>
@@ -165,22 +166,23 @@ const LandingPage = () => {
         </section>
 
         {/* Pricing Section */}
-        <section className="py-16 sm:py-24 bg-white dark:bg-gray-900">
+        <section className="py-24 bg-white dark:bg-gray-900">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-12 sm:mb-16">
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-                {t("landing.pricing.title")}
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                Choose Your Plan
               </h2>
-              <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-                {t("landing.pricing.description")}
+              <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+                Select the perfect plan and start earning coins daily. Upgrade
+                anytime to unlock more benefits.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {plans.map((plan, index) => (
                 <div
                   key={index}
-                  className={`relative bg-white dark:bg-gray-800 p-6 sm:p-8 rounded-xl shadow-sm border-2 transition-all hover:shadow-md ${
+                  className={`relative bg-white dark:bg-gray-800 p-8 rounded-xl shadow-sm border-2 transition-all hover:shadow-md ${
                     plan.popular
                       ? "border-blue-500 ring-2 ring-blue-100 dark:ring-blue-900/20"
                       : "border-gray-200 dark:border-gray-700"
@@ -188,33 +190,33 @@ const LandingPage = () => {
                 >
                   {plan.popular && (
                     <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                      <span className="bg-blue-500 text-white px-3 py-1 rounded-full text-xs sm:text-sm font-medium">
-                        {t("landing.pricing.popular")}
+                      <span className="bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+                        Most Popular
                       </span>
                     </div>
                   )}
 
                   <div className="text-center mb-6">
-                    <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white mb-2">
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
                       {plan.name}
                     </h3>
                     <div className="mb-4">
-                      <span className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
+                      <span className="text-3xl font-bold text-gray-900 dark:text-white">
                         ${plan.price}
                       </span>
-                      <span className="text-sm sm:text-base text-gray-500 dark:text-gray-400">
+                      <span className="text-gray-500 dark:text-gray-400">
                         /month
                       </span>
                     </div>
                     <div className="flex items-center justify-center space-x-2 text-yellow-600 dark:text-yellow-400">
                       <Coins size={20} />
-                      <span className="font-semibold text-sm sm:text-base">
-                        {plan.coinBonus} {t("landing.pricing.coins_daily")}
+                      <span className="font-semibold">
+                        {plan.coinBonus} coins daily
                       </span>
                     </div>
                   </div>
 
-                  <ul className="space-y-3 mb-6 sm:mb-8">
+                  <ul className="space-y-3 mb-8">
                     {plan.features.map((feature, featureIndex) => (
                       <li
                         key={featureIndex}
@@ -224,7 +226,7 @@ const LandingPage = () => {
                           className="text-green-500 flex-shrink-0"
                           size={16}
                         />
-                        <span className="text-sm sm:text-base text-gray-600 dark:text-gray-300">
+                        <span className="text-gray-600 dark:text-gray-300">
                           {feature}
                         </span>
                       </li>
@@ -233,13 +235,13 @@ const LandingPage = () => {
 
                   <Link
                     to="/register"
-                    className={`w-full py-3 px-4 rounded-lg font-semibold text-center block transition-colors text-sm sm:text-base ${
+                    className={`w-full py-3 px-4 rounded-lg font-semibold text-center block transition-colors ${
                       plan.popular
                         ? "bg-blue-600 hover:bg-blue-700 text-white"
                         : "bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-900 dark:text-white"
                     }`}
                   >
-                    {t("landing.pricing.get_started")}
+                    Get Started
                   </Link>
                 </div>
               ))}
@@ -248,145 +250,117 @@ const LandingPage = () => {
         </section>
 
         {/* CTA Section */}
-        <section className="py-16 sm:py-24 bg-gradient-to-r from-blue-600 to-purple-600">
+        <section className="py-24 bg-gradient-to-r from-blue-600 to-purple-600">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4">
-              {t("landing.cta.title")}
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+              Ready to Start Earning?
             </h2>
-            <p className="text-base sm:text-lg text-blue-100 mb-8 max-w-2xl mx-auto">
-              {t("landing.cta.description")}
+            <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+              Join thousands of users who are already earning coins daily and
+              building their income with MLM PLATFORM.
             </p>
             <Link
               to="/register"
-              className="inline-flex items-center px-6 py-3 sm:px-8 sm:py-4 bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-semibold rounded-lg transition-colors text-sm sm:text-base"
+              className="inline-flex items-center px-8 py-4 bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-semibold rounded-lg transition-colors"
             >
-              {t("landing.cta.start_earning")}
+              Start Earning Today
               <Zap className="ml-2" size={20} />
             </Link>
           </div>
         </section>
 
         {/* Footer */}
-        <footer className="bg-white dark:bg-black text-gray-900 dark:text-white py-12">
+        <footer className="bg-gray-900 dark:bg-black text-white py-12">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
               <div>
                 <div className="flex items-center space-x-3 mb-4">
                   <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
                     <Globe className="text-white" size={20} />
                   </div>
-                  <span className="text-lg sm:text-xl font-bold">
-                    MLM PLATFORM
-                  </span>
+                  <span className="text-xl font-bold">MLM PLATFORM</span>
                 </div>
-                <p className="text-sm sm:text-base text-gray-400 dark:text-gray-400">
-                  {t("landing.footer.description")}
+                <p className="text-gray-400">
+                  The ultimate marketing platform for earning and growing your
+                  income.
                 </p>
               </div>
 
               <div>
-                <h3 className="font-semibold mb-4 text-base sm:text-lg">
-                  {t("landing.footer.platform.title")}
-                </h3>
-                <ul className="space-y-2 text-gray-400 dark:text-gray-400 text-sm sm:text-base">
+                <h3 className="font-semibold mb-4">Platform</h3>
+                <ul className="space-y-2 text-gray-400">
                   <li>
                     <Link
                       to="/dashboard"
-                      className="hover:text-black dark:hover:text-white transition-colors"
+                      className="hover:text-white transition-colors"
                     >
-                      {t("landing.footer.platform.dashboard")}
+                      Dashboard
                     </Link>
                   </li>
                   <li>
                     <Link
                       to="/dashboard/products"
-                      className="hover:text-black dark:hover:text-white transition-colors"
+                      className="hover:text-white transition-colors"
                     >
-                      {t("landing.footer.platform.products")}
+                      Products
                     </Link>
                   </li>
                   <li>
                     <Link
                       to="/dashboard/plans"
-                      className="hover:text-black dark:hover:text-white transition-colors"
+                      className="hover:text-white transition-colors"
                     >
-                      {t("landing.footer.platform.plans")}
+                      Plans
                     </Link>
                   </li>
                 </ul>
               </div>
 
               <div>
-                <h3 className="font-semibold mb-4 text-base sm:text-lg">
-                  {t("landing.footer.support.title")}
-                </h3>
-                <ul className="space-y-2 text-gray-400 dark:text-gray-400 text-sm sm:text-base">
+                <h3 className="font-semibold mb-4">Support</h3>
+                <ul className="space-y-2 text-gray-400">
                   <li>
-                    <a
-                      href="#"
-                      className="hover:text-black dark:hover:text-white transition-colors"
-                    >
-                      {t("landing.footer.support.help_center")}
+                    <a href="#" className="hover:text-white transition-colors">
+                      Help Center
                     </a>
                   </li>
                   <li>
-                    <a
-                      href="#"
-                      className="hover:text-black dark:hover:text-white transition-colors"
-                    >
-                      {t("landing.footer.support.contact_us")}
+                    <a href="#" className="hover:text-white transition-colors">
+                      Contact Us
                     </a>
                   </li>
                   <li>
-                    <a
-                      href="#"
-                      className="hover:text-black dark:hover:text-white transition-colors"
-                    >
-                      {t("landing.footer.support.faq")}
+                    <a href="#" className="hover:text-white transition-colors">
+                      FAQ
                     </a>
                   </li>
                 </ul>
               </div>
 
               <div>
-                <h3 className="font-semibold mb-4 text-base sm:text-lg">
-                  {t("landing.footer.legal.title")}
-                </h3>
-                <ul className="space-y-2 text-gray-400 dark:text-gray-400 text-sm sm:text-base">
+                <h3 className="font-semibold mb-4">Legal</h3>
+                <ul className="space-y-2 text-gray-400">
                   <li>
-                    <a
-                      href="#"
-                      className="hover:text-black dark:hover:text-white transition-colors"
-                    >
-                      {t("landing.footer.legal.privacy_policy")}
+                    <a href="#" className="hover:text-white transition-colors">
+                      Privacy Policy
                     </a>
                   </li>
                   <li>
-                    <a
-                      href="#"
-                      className="hover:text-black dark:hover:text-white transition-colors"
-                    >
-                      {t("landing.footer.legal.terms_of_service")}
+                    <a href="#" className="hover:text-white transition-colors">
+                      Terms of Service
                     </a>
                   </li>
                   <li>
-                    <a
-                      href="#"
-                      className="hover:text-black dark:hover:text-white transition-colors"
-                    >
-                      {t("landing.footer.legal.cookie_policy")}
+                    <a href="#" className="hover:text-white transition-colors">
+                      Cookie Policy
                     </a>
                   </li>
                 </ul>
               </div>
             </div>
 
-            <div className="border-t border-gray-800 dark:border-gray-700 mt-8 pt-8 text-center text-gray-400 dark:text-gray-400 text-sm sm:text-base">
-              <p>
-                {t("landing.footer.copyright", {
-                  year: new Date().getFullYear(),
-                })}
-              </p>
+            <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+              <p>&copy; 2024 MLM PLATFORM. All rights reserved.</p>
             </div>
           </div>
         </footer>

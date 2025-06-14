@@ -1,80 +1,113 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Users,
   Copy,
-  Share,
   MessageCircle,
   Phone,
   CheckCircle,
   Clock,
   DollarSign,
+  Loader,
 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import StatCard from "../components/StatCard";
+
+// Define the Friend interface for type safety
+interface Friend {
+  id: number;
+  name: string;
+  email: string;
+  joinDate: string;
+  status: "paid" | "pending";
+  bonus: number;
+}
 
 const ReferralsPage: React.FC = () => {
   const { t } = useTranslation();
   const { user } = useAuth();
   const [copiedLink, setCopiedLink] = useState(false);
+  const [referralFriends, setReferralFriends] = useState<Friend[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const referralLink = `https://tarmoqli.com/ref/${user?.referralCode}`;
+  // Check if user is authenticated
+  if (!user) {
+    return <div className="text-red-500">Please log in to view referrals.</div>;
+  }
 
-  const referralFriends = [
-    {
-      id: 1,
-      name: "Alice Johnson",
-      email: "alice@example.com",
-      joinDate: "2024-01-10",
-      status: "paid",
-      bonus: 50.0,
-    },
-    {
-      id: 2,
-      name: "Bob Smith",
-      email: "bob@example.com",
-      joinDate: "2024-01-08",
-      status: "paid",
-      bonus: 50.0,
-    },
-    {
-      id: 3,
-      name: "Carol Williams",
-      email: "carol@example.com",
-      joinDate: "2024-01-05",
-      status: "pending",
-      bonus: 50.0,
-    },
-    {
-      id: 4,
-      name: "David Brown",
-      email: "david@example.com",
-      joinDate: "2024-01-03",
-      status: "paid",
-      bonus: 50.0,
-    },
-    {
-      id: 5,
-      name: "Emma Davis",
-      email: "emma@example.com",
-      joinDate: "2024-01-01",
-      status: "paid",
-      bonus: 50.0,
-    },
-    {
-      id: 6,
-      name: "Frank Miller",
-      email: "frank@example.com",
-      joinDate: "2023-12-28",
-      status: "pending",
-      bonus: 50.0,
-    },
-  ];
+  // Validate environment variable for referral key
+  const referralKey = "http://localhost:5173";
+  // import.meta.env.VITE_REFERAL_KEY;
+  if (!referralKey) {
+    console.error("VITE_REFERAL_KEY is not defined");
+    return <div className="text-red-500">Error: Referral key is missing.</div>;
+  }
+  const referralLink = `${referralKey}/${user.id}`;
 
-  const totalBonuses = referralFriends.reduce(
-    (sum, friend) => sum + friend.bonus,
-    0
-  );
+  // Fetch referral friends from API
+  useEffect(() => {
+    const fetchReferralFriends = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+        const token = localStorage.getItem("token");
+        if (!token) {
+          throw new Error("No authentication token found");
+        }
+        const res = await fetch("https://mlm-backend.pixl.uz/referal/user", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (!res.ok) {
+          throw new Error(`HTTP error! Status: ${res.status}`);
+        }
+        const data = await res.json();
+        console.log("Referral friends:", data);
+        // Normalize API response to ensure it's an array of Friend objects
+        setReferralFriends(
+          Array.isArray(data)
+            ? data.map(
+                (item: any): Friend => ({
+                  id: item.id,
+                  name: item.name || "Unknown",
+                  email: item.email || "N/A",
+                  joinDate: item.joinDate || new Date().toISOString(),
+                  status: item.status || "pending",
+                  bonus: Number(item.bonus) || 0,
+                })
+              )
+            : data.friends && Array.isArray(data.friends)
+            ? data.friends.map(
+                (item: any): Friend => ({
+                  id: item.id,
+                  name: item.name || "Unknown",
+                  email: item.email || "N/A",
+                  joinDate: item.joinDate || new Date().toISOString(),
+                  status: item.status || "pending",
+                  bonus: Number(item.bonus) || 0,
+                })
+              )
+            : []
+        );
+      } catch (error: any) {
+        console.error("Referal do‘stlarni olishda xatolik:", error);
+        setError("Failed to load referral friends. Please try again later.");
+        setReferralFriends([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchReferralFriends();
+  }, [user.id]);
+
+  // Calculate total bonuses with safety check
+  const totalBonuses = Array.isArray(referralFriends)
+    ? referralFriends.reduce((sum, friend) => sum + (friend.bonus || 0), 0)
+    : 0;
+
+  // Calculate paid and pending referrals
   const paidReferrals = referralFriends.filter(
     (friend) => friend.status === "paid"
   ).length;
@@ -82,6 +115,7 @@ const ReferralsPage: React.FC = () => {
     (friend) => friend.status === "pending"
   ).length;
 
+  // Copy referral link to clipboard
   const copyReferralLink = async () => {
     try {
       await navigator.clipboard.writeText(referralLink);
@@ -92,6 +126,7 @@ const ReferralsPage: React.FC = () => {
     }
   };
 
+  // Share on Telegram
   const shareOnTelegram = () => {
     const message = encodeURIComponent(
       `Join MLM PLATFORM Marketing Platform using my referral link: ${referralLink}`
@@ -104,6 +139,7 @@ const ReferralsPage: React.FC = () => {
     );
   };
 
+  // Share on WhatsApp
   const shareOnWhatsApp = () => {
     const message = encodeURIComponent(
       `Join MLM PLATFORM Marketing Platform using my referral link: ${referralLink}`
@@ -111,10 +147,26 @@ const ReferralsPage: React.FC = () => {
     window.open(`https://wa.me/?text=${message}`, "_blank");
   };
 
+  // Render loading state
+  if (isLoading) {
+    return (
+      <div className="text-gray-500 dark:text-gray-400 max-w-[1200px] flex items-center justify-center h-screen ">
+        <h1 className="mx-auto flex gap-2 text-[25px] items-center">
+          Loading <Loader className="w-8 animate-spin" />
+        </h1>
+      </div>
+    );
+  }
+
+  // Render error state
+  if (error) {
+    return <div className="text-red-500">{error}</div>;
+  }
+
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+      <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-6">
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
           {t("common.referrals")}
         </h1>
@@ -145,7 +197,7 @@ const ReferralsPage: React.FC = () => {
         />
         <StatCard
           title={t("referrals.bonusEarned")}
-          value={`$${totalBonuses.toFixed(2)}`}
+          value={`${totalBonuses} coin`}
           icon={DollarSign}
           color="purple"
         />
@@ -153,18 +205,18 @@ const ReferralsPage: React.FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Referral Link */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+        <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-6">
           <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
             {t("referrals.referralLink")}
           </h2>
 
           <div className="space-y-4">
-            <div className="flex items-center space-x-2 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg border dark:border-gray-600">
+            <div className="flex items-center space-x-2 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg border dark:border-gray-700">
               <input
                 type="text"
                 value={referralLink}
                 readOnly
-                className="flex-1 bg-transparent text-sm text-gray-700 dark:text-gray-100 focus:outline-none"
+                className="flex-1 bg-transparent text-sm text-gray-700 dark:text-gray-200 focus:outline-none"
               />
               <button
                 onClick={copyReferralLink}
@@ -204,13 +256,13 @@ const ReferralsPage: React.FC = () => {
         </div>
 
         {/* Referral Stats */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+        <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-6">
           <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
             Referral Performance
           </h2>
 
           <div className="space-y-4">
-            <div className="flex items-center justify-between p-4 bg-green-50 dark:bg-green-900 rounded-lg">
+            <div className="flex items-center justify-between p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
                   <CheckCircle className="text-white" size={16} />
@@ -219,7 +271,7 @@ const ReferralsPage: React.FC = () => {
                   <p className="font-medium text-gray-900 dark:text-white">
                     Paid Referrals
                   </p>
-                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
                     {paidReferrals} friends
                   </p>
                 </div>
@@ -229,7 +281,7 @@ const ReferralsPage: React.FC = () => {
               </span>
             </div>
 
-            <div className="flex items-center justify-between p-4 bg-orange-50 dark:bg-orange-900 rounded-lg">
+            <div className="flex items-center justify-between p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center">
                   <Clock className="text-white" size={16} />
@@ -238,7 +290,7 @@ const ReferralsPage: React.FC = () => {
                   <p className="font-medium text-gray-900 dark:text-white">
                     Pending Referrals
                   </p>
-                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
                     {pendingReferrals} friends
                   </p>
                 </div>
@@ -252,7 +304,7 @@ const ReferralsPage: React.FC = () => {
       </div>
 
       {/* Referral Friends List */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+      <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-6">
         <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">
           {t("referrals.invitedFriends")}
         </h2>
@@ -275,61 +327,72 @@ const ReferralsPage: React.FC = () => {
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
-              {referralFriends.map((friend) => (
-                <tr
-                  key={friend.id}
-                  className="hover:bg-gray-50 dark:hover:bg-gray-700"
-                >
-                  <td className="py-4 px-4">
-                    <div>
-                      <p className="font-medium text-gray-900 dark:text-white">
-                        {friend.name}
-                      </p>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">
-                        {friend.email}
-                      </p>
-                    </div>
-                  </td>
-                  <td className="py-4 px-4">
-                    <span className="text-sm text-gray-700 dark:text-gray-300">
-                      {new Date(friend.joinDate).toLocaleDateString()}
-                    </span>
-                  </td>
-                  <td className="py-4 px-4">
-                    <span
-                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        friend.status === "paid"
-                          ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300"
-                          : "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300"
-                      }`}
-                    >
-                      {friend.status === "paid" ? (
-                        <>
-                          <CheckCircle className="mr-1" size={12} />
-                          {t("referrals.paid")}
-                        </>
-                      ) : (
-                        <>
-                          <Clock className="mr-1" size={12} />
-                          {t("referrals.pending")}
-                        </>
-                      )}
-                    </span>
-                  </td>
-                  <td className="py-4 px-4 text-right">
-                    <span
-                      className={`text-sm font-semibold ${
-                        friend.status === "paid"
-                          ? "text-green-600 dark:text-green-400"
-                          : "text-orange-600 dark:text-orange-400"
-                      }`}
-                    >
-                      ${friend.bonus.toFixed(2)}
-                    </span>
+            <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
+              {referralFriends.length === 0 ? (
+                <tr>
+                  <td
+                    colSpan={4}
+                    className="py-4 px-4 text-center text-gray-500 dark:text-gray-400"
+                  >
+                    No referral friends found.
                   </td>
                 </tr>
-              ))}
+              ) : (
+                referralFriends.map((friend) => (
+                  <tr
+                    key={friend.id}
+                    className="hover:bg-gray-50 dark:hover:bg-gray-800 transition"
+                  >
+                    <td className="py-4 px-4">
+                      <div>
+                        <p className="font-medium text-gray-900 dark:text-white">
+                          {friend.name}
+                        </p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                          {friend.email}
+                        </p>
+                      </div>
+                    </td>
+                    <td className="py-4 px-4">
+                      <span className="text-sm text-gray-700 dark:text-gray-300">
+                        {new Date(friend.joinDate).toLocaleDateString()}
+                      </span>
+                    </td>
+                    <td className="py-4 px-4">
+                      <span
+                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                          friend.status === "paid"
+                            ? "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400"
+                            : "bg-orange-100 text-orange-800 dark:bg-orange-900/20 dark:text-orange-400"
+                        }`}
+                      >
+                        {friend.status === "paid" ? (
+                          <>
+                            <CheckCircle className="mr-1" size={12} />
+                            {t("referrals.paid")}
+                          </>
+                        ) : (
+                          <>
+                            <Clock className="mr-1" size={12} />
+                            {t("referrals.pending")}
+                          </>
+                        )}
+                      </span>
+                    </td>
+                    <td className="py-4 px-4 text-right">
+                      <span
+                        className={`text-sm font-semibold ${
+                          friend.status === "paid"
+                            ? "text-green-600 dark:text-green-400"
+                            : "text-orange-600 dark:text-orange-400"
+                        }`}
+                      >
+                        ${(friend.bonus || 0).toFixed(2)}
+                      </span>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>

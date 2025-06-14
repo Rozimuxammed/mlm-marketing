@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Search, Star, Coins, ShoppingCart, Eye } from "lucide-react";
+import { Search, Coins, ShoppingCart, Eye } from "lucide-react";
 import { useCart } from "../contexts/CartContext";
 
 const ProductsPage: React.FC = () => {
@@ -9,107 +9,64 @@ const ProductsPage: React.FC = () => {
   const { addToCart } = useCart();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [products, setProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const products = [
-    {
-      id: "1",
-      name: "Digital Marketing Masterclass",
-      description:
-        "Complete course on digital marketing strategies and techniques",
-      price: 99.99,
-      coinPrice: 2000,
-      image:
-        "https://images.pexels.com/photos/265087/pexels-photo-265087.jpeg?auto=compress&cs=tinysrgb&w=400",
-      category: "courses",
-      rating: 4.8,
-      reviews: 156,
-      featured: true,
-    },
-    {
-      id: "2",
-      name: "Social Media Templates Pack",
-      description:
-        "Professional templates for Instagram, Facebook, and Twitter",
-      price: 29.99,
-      coinPrice: 600,
-      image:
-        "https://images.pexels.com/photos/267350/pexels-photo-267350.jpeg?auto=compress&cs=tinysrgb&w=400",
-      category: "templates",
-      rating: 4.6,
-      reviews: 89,
-      featured: false,
-    },
-    {
-      id: "3",
-      name: "SEO Optimization Tool",
-      description: "Advanced tool for website SEO analysis and optimization",
-      price: 149.99,
-      coinPrice: 3000,
-      image:
-        "https://images.pexels.com/photos/270348/pexels-photo-270348.jpeg?auto=compress&cs=tinysrgb&w=400",
-      category: "tools",
-      rating: 4.9,
-      reviews: 234,
-      featured: true,
-    },
-    {
-      id: "4",
-      name: "Email Marketing Guide",
-      description: "Comprehensive guide to effective email marketing campaigns",
-      price: 39.99,
-      coinPrice: 800,
-      image:
-        "https://i.pinimg.com/originals/ee/49/a7/ee49a7393adcb6d870a86350845938f2.jpg",
-      category: "digital",
-      rating: 4.7,
-      reviews: 112,
-      featured: false,
-    },
-    {
-      id: "5",
-      name: "Brand Identity Package",
-      description: "Complete brand identity design service for your business",
-      price: 299.99,
-      coinPrice: 6000,
-      image:
-        "https://images.pexels.com/photos/196644/pexels-photo-196644.jpeg?auto=compress&cs=tinysrgb&w=400",
-      category: "services",
-      rating: 4.9,
-      reviews: 67,
-      featured: true,
-    },
-    {
-      id: "6",
-      name: "Content Creation Toolkit",
-      description: "Essential tools and resources for content creators",
-      price: 79.99,
-      coinPrice: 1600,
-      image:
-        "https://images.pexels.com/photos/265087/pexels-photo-265087.jpeg?auto=compress&cs=tinysrgb&w=400",
-      category: "tools",
-      rating: 4.5,
-      reviews: 198,
-      featured: false,
-    },
-  ];
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch("https://mlm-backend.pixl.uz/products");
+        const data = await res.json();
+        setProducts(Array.isArray(data) ? data : []);
+      } catch (error) {
+        console.error("Mahsulotlarni olishda xatolik:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProducts();
+  }, []);
 
-  const filteredProducts = products.filter((product) => {
+  const filteredProducts = products?.filter((product) => {
     const matchesSearch =
-      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory =
-      selectedCategory === "all" || product.category === selectedCategory;
+      product.translations?.[0]?.name
+        ?.toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+      product.translations?.[0]?.description
+        ?.toLowerCase()
+        .includes(searchTerm.toLowerCase());
+    const matchesCategory = selectedCategory === "all";
     return matchesSearch && matchesCategory;
   });
 
   const handleAddToCart = (product: any) => {
     addToCart({
       id: product.id,
-      name: product.name,
-      price: product.price,
-      coinPrice: product.coinPrice,
-      image: product.image,
+      name: product.translations?.[0]?.name || "Unnamed Product",
+      price: product.coin,
+      coinPrice: product.coin,
+      image: product.photo_url?.[0] || null,
     });
+  };
+
+  const renderSkeletons = () => {
+    return Array.from({ length: 8 }).map((_, idx) => (
+      <div
+        key={idx}
+        className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden animate-pulse"
+      >
+        <div className="w-full h-40 bg-gray-200 dark:bg-gray-700"></div>
+        <div className="p-4 space-y-3">
+          <div className="h-4 bg-gray-300 dark:bg-gray-600 rounded w-3/4"></div>
+          <div className="h-3 bg-gray-300 dark:bg-gray-600 rounded w-5/6"></div>
+          <div className="h-3 bg-gray-300 dark:bg-gray-600 rounded w-1/2"></div>
+          <div className="flex gap-2 mt-4">
+            <div className="h-8 bg-gray-300 dark:bg-gray-600 rounded w-full"></div>
+            <div className="h-8 bg-gray-300 dark:bg-gray-600 rounded w-full"></div>
+          </div>
+        </div>
+      </div>
+    ));
   };
 
   return (
@@ -124,25 +81,20 @@ const ProductsPage: React.FC = () => {
         </p>
       </div>
 
-      {/* Search and Filters */}
+      {/* Search */}
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-        <div className="flex flex-col lg:flex-row gap-4">
-          {/* Search */}
-          <div className="flex-1">
-            <div className="relative">
-              <Search
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                size={20}
-              />
-              <input
-                type="text"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Search products..."
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-              />
-            </div>
-          </div>
+        <div className="relative">
+          <Search
+            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+            size={20}
+          />
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Search products..."
+            className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+          />
         </div>
       </div>
 
@@ -152,7 +104,11 @@ const ProductsPage: React.FC = () => {
           All Products ({filteredProducts.length})
         </h2>
 
-        {filteredProducts.length === 0 ? (
+        {loading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {renderSkeletons()}
+          </div>
+        ) : filteredProducts.length === 0 ? (
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-12 text-center">
             <div className="text-gray-400 dark:text-gray-500 mb-4">
               <Search size={48} className="mx-auto" />
@@ -173,8 +129,11 @@ const ProductsPage: React.FC = () => {
               >
                 <div className="relative">
                   <img
-                    src={product.image}
-                    alt={product.name}
+                    src={
+                      product.photo_url?.[0]?.photo_url ||
+                      "https://via.placeholder.com/400x200"
+                    }
+                    alt={product.translations?.[0]?.name}
                     className="w-full h-40 object-cover"
                   />
                   {product.featured && (
@@ -188,37 +147,16 @@ const ProductsPage: React.FC = () => {
 
                 <div className="p-4">
                   <h3 className="text-md font-semibold text-gray-900 dark:text-white mb-2 line-clamp-2">
-                    {product.name}
+                    {product.translations?.[0]?.name}
                   </h3>
                   <p className="text-gray-600 dark:text-gray-400 text-sm mb-3 line-clamp-2">
-                    {product.description}
+                    {product.translations?.[0]?.description}
                   </p>
 
-                  <div className="flex items-center mb-3">
-                    <div className="flex items-center">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className={`w-3 h-3 ${
-                            i < Math.floor(product.rating)
-                              ? "text-yellow-400 fill-current"
-                              : "text-gray-300 dark:text-gray-600"
-                          }`}
-                        />
-                      ))}
-                    </div>
-                    <span className="text-xs text-gray-600 dark:text-gray-400 ml-1">
-                      ({product.reviews})
-                    </span>
-                  </div>
-
                   <div className="mb-3">
-                    <div className="text-md font-bold text-gray-900 dark:text-white">
-                      ${product.price}
-                    </div>
                     <div className="flex items-center text-yellow-600 dark:text-yellow-400">
                       <Coins size={14} className="mr-1" />
-                      <span className="text-xs">{product.coinPrice} coins</span>
+                      <span className="text-xs">{product.coin} coins</span>
                     </div>
                   </div>
 
