@@ -11,7 +11,7 @@ const PublicLayout: React.FC<PublicLayoutProps> = ({ children }) => {
 
   return (
     <div className={`min-h-screen ${isDarkMode ? 'dark' : ''}`}>
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
+      <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors">
         <Navbar />
         {children}
       </div>
