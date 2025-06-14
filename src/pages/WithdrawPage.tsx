@@ -1,146 +1,82 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import {
-  Wallet,
-  CreditCard,
-  Clock,
-  CheckCircle,
-  XCircle,
-  Calendar,
-  DollarSign,
-} from "lucide-react";
+import { Wallet, CreditCard, Calendar, Coins } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import StatCard from "../components/StatCard";
+import { toast } from "sonner";
+import CardInfo from "../components/CardInfo";
 
 const WithdrawPage: React.FC = () => {
   const { t } = useTranslation();
   const { user } = useAuth();
-  const [withdrawAmount, setWithdrawAmount] = useState("");
-  const [cardNumber, setCardNumber] = useState("");
-  const [cardHolder, setCardHolder] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const withdrawHistory = [
-    {
-      id: 1,
-      amount: 100.0,
-      status: "completed",
-      requestDate: "2024-01-10",
-      processedDate: "2024-01-11",
-    },
-    {
-      id: 2,
-      amount: 250.0,
-      status: "processing",
-      requestDate: "2024-01-08",
-      processedDate: null,
-    },
-    {
-      id: 3,
-      amount: 150.75,
-      status: "completed",
-      requestDate: "2024-01-05",
-      processedDate: "2024-01-06",
-    },
-    {
-      id: 4,
-      amount: 75.5,
-      status: "rejected",
-      requestDate: "2024-01-03",
-      processedDate: "2024-01-04",
-    },
-    {
-      id: 5,
-      amount: 200.0,
-      status: "completed",
-      requestDate: "2024-01-01",
-      processedDate: "2024-01-02",
-    },
-  ];
+  const [withdrawHistory, setWithdrawHistory] = useState([]);
 
   const totalWithdrawn = withdrawHistory
     .filter((w) => w.status === "completed")
-    .reduce((sum, w) => sum + w.amount, 0);
+    .reduce((sum, w) => sum + w.how_much, 0);
 
-  const pendingWithdrawals = withdrawHistory
-    .filter((w) => w.status === "processing")
-    .reduce((sum, w) => sum + w.amount, 0);
-
-  const handleWithdrawSubmit = async (e: React.FormEvent) => {
+  const handleWithdrawSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
 
+    const formData = new FormData(e.target as HTMLFormElement);
+    const obj = {
+      how_much: Number(formData.get("how_much")),
+      cardNumber: formData.get("cardNumber"),
+      fullName: formData.get("fullname"),
+    };
+
+    const token = localStorage.getItem("token");
+
     try {
-      const response = await fetch("https://api.interkassa.com/withdraw", {
+      const req = await fetch("https://mlm-backend.pixl.uz/take-off", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId: user?.id,
-          amount: parseFloat(withdrawAmount),
-          cardNumber: cardNumber.replace(/\s/g, ""),
-          cardHolder,
-        }),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(obj),
       });
-      if (!response.ok) throw new Error("Withdrawal failed");
-      setWithdrawAmount("");
-      setCardNumber("");
-      setCardHolder("");
-      alert("Withdrawal request submitted successfully!");
-    } catch (error) {
-      console.error("Withdrawal error:", error);
-      alert("Withdrawal request failed. Please try again.");
+
+      if (!req.ok) {
+        const errorText = await req.text();
+        throw new Error(`Xatolik: ${req.status} - ${errorText}`);
+      }
+
+      await req.json();
+      (e.target as HTMLFormElement).reset();
+      toast.success("So'rov muvaffaqiyatli yuborildi!");
+      setWithdrawHistory((prev) => [...prev, obj]);
+    } catch (error: any) {
+      toast.error("So'rov yuborishda xatolik: " + error.message);
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case "completed":
-        return <CheckCircle className="text-green-500" size={16} />;
-      case "processing":
-        return <Clock className="text-orange-500" size={16} />;
-      case "rejected":
-        return <XCircle className="text-red-500" size={16} />;
-      default:
-        return <Clock className="text-gray-500" size={16} />;
-    }
-  };
+  useEffect(() => {
+    const fetchWithdrawals = async () => {
+      const token = localStorage.getItem("token");
+      try {
+        const req = await fetch("https://mlm-backend.pixl.uz/take-off/user", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const data = await req.json();
+        setWithdrawHistory(data);
+      } catch (error) {
+        toast.error("Error fetching withdrawal history");
+      }
+    };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "completed":
-        return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300";
-      case "processing":
-        return "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300";
-      case "rejected":
-        return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300";
-      default:
-        return "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300";
-    }
-  };
-
-  const formatCardNumber = (value: string) => {
-    const v = value.replace(/\s+/g, "").replace(/[^0-9]/gi, "");
-    const matches = v.match(/\d{4,16}/g);
-    const match = (matches && matches[0]) || "";
-    const parts = [];
-
-    for (let i = 0, len = match.length; i < len; i += 4) {
-      parts.push(match.substring(i, i + 4));
-    }
-
-    return parts.length ? parts.join(" ") : v;
-  };
-
-  const handleCardNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const formatted = formatCardNumber(e.target.value);
-    setCardNumber(formatted);
-  };
+    fetchWithdrawals();
+  }, []);
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
           {t("withdraw.withdrawFunds")}
@@ -150,8 +86,7 @@ const WithdrawPage: React.FC = () => {
         </p>
       </div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <StatCard
           title={t("withdraw.availableBalance")}
           value={`$${(user?.balance ?? 0).toFixed(2)}`}
@@ -161,18 +96,6 @@ const WithdrawPage: React.FC = () => {
         <StatCard
           title={t("withdraw.totalWithdrawn")}
           value={`$${totalWithdrawn.toFixed(2)}`}
-          icon={DollarSign}
-          color="green"
-        />
-        <StatCard
-          title={t("withdraw.pendingWithdrawals")}
-          value={`$${pendingWithdrawals.toFixed(2)}`}
-          icon={Clock}
-          color="orange"
-        />
-        <StatCard
-          title={t("withdraw.thisMonth")}
-          value={`$${(totalWithdrawn * 0.3).toFixed(2)}`}
           icon={Calendar}
           color="purple"
         />
@@ -191,25 +114,22 @@ const WithdrawPage: React.FC = () => {
                 {t("withdraw.withdrawAmount")}
               </label>
               <div className="relative">
-                <DollarSign
+                <Coins
                   className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500"
                   size={20}
                 />
                 <input
+                  name="how_much"
                   type="number"
-                  value={withdrawAmount}
-                  onChange={(e) => setWithdrawAmount(e.target.value)}
                   className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="0.00"
                   min="10"
-                  max={user?.balance}
                   step="0.01"
-                  required
                 />
               </div>
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                {t("withdraw.minimumWithdrawal", { amount: 10 })} | {t("withdraw.available")}: $
-                {(user?.balance ?? 0).toFixed(2)}
+                {t("withdraw.minimumWithdrawal", { amount: 10 })} |{" "}
+                {t("withdraw.available")}: ${(user?.balance ?? 0).toFixed(2)}
               </p>
             </div>
 
@@ -223,13 +143,11 @@ const WithdrawPage: React.FC = () => {
                   size={20}
                 />
                 <input
+                  name="cardNumber"
                   type="text"
-                  value={cardNumber}
-                  onChange={handleCardNumberChange}
                   className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white font-mono focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="1234 5678 9012 3456"
                   maxLength={19}
-                  required
                 />
               </div>
             </div>
@@ -239,39 +157,23 @@ const WithdrawPage: React.FC = () => {
                 {t("withdraw.cardHolder")}
               </label>
               <input
+                name="fullname"
                 type="text"
-                value={cardHolder}
-                onChange={(e) => setCardHolder(e.target.value)}
                 className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="John Doe"
-                required
               />
             </div>
 
             <button
               type="submit"
-              disabled={
-                isSubmitting || !withdrawAmount || !cardNumber || !cardHolder
-              }
               className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 rounded-lg font-semibold hover:from-blue-700 hover:to-indigo-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              disabled={isSubmitting}
             >
               {isSubmitting
                 ? t("common.loading")
                 : t("withdraw.requestWithdraw")}
             </button>
           </form>
-
-          <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-            <h4 className="font-medium text-blue-900 dark:text-blue-200 mb-2">
-              {t("withdraw.notes")}
-            </h4>
-            <ul className="text-sm text-blue-800 dark:text-blue-300 space-y-1">
-              <li>• {t("withdraw.notesList.processingTime")}</li>
-              <li>• {t("withdraw.notesList.minimumAmount")}</li>
-              <li>• {t("withdraw.notesList.fees")}</li>
-              <li>• {t("withdraw.notesList.cardDetails")}</li>
-            </ul>
-          </div>
         </div>
 
         {/* Withdrawal History */}
@@ -281,40 +183,17 @@ const WithdrawPage: React.FC = () => {
           </h2>
 
           <div className="space-y-4">
-            {withdrawHistory.map((withdrawal) => (
-              <div
-                key={withdrawal.id}
-                className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg"
-              >
-                <div className="flex items-center space-x-3">
-                  {getStatusIcon(withdrawal.status)}
-                  <div>
-                    <p className <span class="font-medium text-gray-900 dark:text-white">${withdrawal.amount.toFixed(2)}</span>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                      {new Date(withdrawal.requestDate).toLocaleString()}
-                    </p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <div className="flex-center text-right">
-                    <span
-                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${getStatusColor(
-                        withdrawal.status
-                      )}`}
-                    >
-                      {t(`withdraw.${withdrawal.status}`)}
-                    </span>
-                    {withdrawal.processedDate && (
-                      <p className="text-red text-xs dark:text-gray-400 mt-1">
-                        {t("withdraw.processed")}: {new Date(
-                          withdrawal.processedDate
-                        ).toLocaleString()}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </div>
-          ))}
+            {withdrawHistory.map((item) => (
+              <CardInfo
+                key={item.id}
+                cardNumber={item.cardNumber}
+                fullName={item.fullName}
+                how_much={item.how_much}
+                requestDate={item.requestDate}
+                status={item.status}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </div>

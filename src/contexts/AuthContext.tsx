@@ -14,9 +14,14 @@ interface User {
 interface AuthContextType {
   user: User | null;
   login: (email: string, password: string) => Promise<void>;
-  register: (name: string, email: string, password: string) => Promise<void>;
-  loginWithGoogle: () => Promise<void>;
-  loginWithFacebook: () => Promise<void>;
+  register: (
+    name: string,
+    email: string,
+    password: string,
+    referal?: string
+  ) => Promise<void>;
+  loginWithGoogle: () => void;
+  loginWithFacebook: () => void;
   logout: () => void;
   isLoading: boolean;
   claimDailyBonus: () => void;
@@ -39,14 +44,42 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const savedUser = localStorage.getItem("user-data");
-    if (savedUser) {
-      setUser(JSON.parse(savedUser));
-    }
+    const fetchUserData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          setIsLoading(false);
+          return;
+        }
 
-    setIsLoading(false);
+        const response = await fetch(
+          `${import.meta.env.VITE_API_KEY}/users/token`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const data = await response.json();
+
+        if (response.ok) {
+          setUser(data);
+        } else {
+          localStorage.removeItem("token");
+        }
+      } catch (error) {
+        console.error("Fetch error:", error);
+        localStorage.removeItem("token");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUserData();
   }, []);
-  1;
+
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
@@ -62,87 +95,70 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       );
 
       const data = await response.json();
-      console.log(data.data.user);
 
       if (!response.ok) {
         throw new Error(data.message || "Login failed");
       }
 
-      // const loggedInUser: User = {
-      //   id: data.data.user.id,
-      //   name: data.data.user.name,
-      //   email: data.data.user.email,
-      //   createdAt: data.data.user.createdAt,
-      //   coin: data.data.user.coin,
-      //   userTariff: data.data.user.userTariff || "Basic",
-      //   avatar: localStorage.getItem("avatar") || "",
-      // };
-
       setUser(data.data.user);
-      // console.log(loggedInUser);
-
-      localStorage.setItem("token", data.token); // tokenni oddiy string sifatida saqlaymiz
+      localStorage.setItem("token", data.token);
       localStorage.setItem("user-data", JSON.stringify(data.data.user));
       toast.success(data.message);
-
-      // window.location.href = "/dashboard";
     } catch (error: any) {
       toast.error(error?.message || "Login failed");
-      console.log(error.message);
     } finally {
       setIsLoading(false);
     }
   };
 
-  // rester
-  const register = async (name: string, email: string, password: string) => {
+  const register = async (
+    name: string,
+    email: string,
+    password: string,
+    referal?: string
+  ) => {
     setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    try {
+      const response = await fetch(
+        "https://mlm-backend.pixl.uz/authorization/register",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ name, email, password, referal }),
+        }
+      );
 
-    const mockUser: User = {
-      id: "12345",
-      name: "qwerty",
-      email: "qwert@gmail.com",
-    };
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || "Registration failed");
+      }
 
-    setUser(mockUser);
-    localStorage.setItem("user-data", JSON.stringify(mockUser));
-    setIsLoading(false);
+      toast.success(
+        data.message ||
+          "Registration successful! Please check your email to verify your account."
+      );
+      setUser(data);
+    } catch (error: any) {
+      toast.error(error.message || "Registration failed");
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const loginWithGoogle = async () => {
-    setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    const mockUser: User = {
-      id: "2",
-      name: "Google User",
-      email: "user@gmail.com",
-    };
-
-    setUser(mockUser);
-    localStorage.setItem("user-data", JSON.stringify(mockUser));
-    setIsLoading(false);
+  const loginWithGoogle = () => {
+    window.location.href = "https://mlm-backend.pixl.uz/authorization/google";
   };
 
-  const loginWithFacebook = async () => {
-    setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    const mockUser: User = {
-      id: "3",
-      name: "Facebook User",
-      email: "user@facebook.com",
-    };
-
-    setUser(mockUser);
-    localStorage.setItem("user-data", JSON.stringify(mockUser));
-    setIsLoading(false);
+  const loginWithFacebook = () => {
+    window.location.href = "https://mlm-backend.pixl.uz/authorization/facebook";
   };
 
   const claimDailyBonus = () => {
     if (user) {
-      // Custom bonus logic goes here
+      // Bonus olish logikasi shu yerga yoziladi
     }
   };
 
@@ -150,10 +166,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     setUser(null);
     localStorage.removeItem("user-data");
     localStorage.removeItem("token");
-    // navigate("/login");
+    // navigate("/login"); // Agar react-router ishlatilsa
   };
 
-  const value = {
+  const value: AuthContextType = {
     user,
     login,
     register,

@@ -1,262 +1,142 @@
-import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Check, Crown, Zap, Star, CreditCard } from "lucide-react";
-import { useAuth } from "../contexts/AuthContext";
+import {
+  Star,
+  CoinsIcon,
+  Coins,
+  Calendar,
+  Pen,
+  LanguagesIcon,
+  User,
+  PointerOffIcon,
+} from "lucide-react";
+import { useEffect, useState } from "react";
 
 const PlansPage: React.FC = () => {
   const { t } = useTranslation();
-  const { user } = useAuth();
-  const [selectedPlan, setSelectedPlan] = useState("");
+  const [plans, setPlans] = useState([]);
+  const [user, setUser] = useState<any>(null);
 
-  const plans = [
-    {
-      id: "basic",
-      name: t("plans.basic"),
-      price: 29,
-      icon: Zap,
-      color: "blue",
-      features: [
-        t("plans.basic.features.referrals"),
-        t("plans.basic.features.earnings"),
-        t("plans.basic.features.support"),
-        t("plans.basic.features.analytics"),
-        t("plans.basic.features.mobile"),
-      ],
-    },
-    {
-      id: "premium",
-      name: t("plans.premium"),
-      price: 59,
-      icon: Crown,
-      color: "purple",
-      popular: true,
-      features: [
-        t("plans.premium.features.referrals"),
-        t("plans.premium.features.earnings"),
-        t("plans.premium.features.support"),
-        t("plans.premium.features.analytics"),
-        t("plans.premium.features.mobile"),
-        t("plans.premium.features.bonuses"),
-      ],
-    },
-    {
-      id: "enterprise",
-      name: t("plans.enterprise"),
-      price: 99,
-      icon: Star,
-      color: "orange",
-      features: [
-        t("plans.enterprise.features.premium"),
-        t("plans.enterprise.features.team"),
-        t("plans.enterprise.features.api"),
-        t("plans.enterprise.features.integrations"),
-        t("plans.enterprise.features.manager"),
-        t("plans.enterprise.features.whitelabel"),
-      ],
-    },
-  ];
+  useEffect(() => {
+    const getPlans = async () => {
+      const req = await fetch("https://mlm-backend.pixl.uz/tariff");
+      if (req.ok) {
+        const res = await req.json();
+        setPlans(res);
+      } else {
+        console.error("Failed to fetch plans");
+      }
+    };
 
-  const handleSelectPlan = (planId: string) => {
-    setSelectedPlan(planId);
-    console.log("Selected plan:", planId);
-  };
+    const getUser = async () => {
+      const token = localStorage.getItem("token");
+      const req = await fetch("https://mlm-backend.pixl.uz/users/me", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (req.ok) {
+        const res = await req.json();
+        setUser(res);
+      }
+    };
 
-  const getColorClasses = (color: string) => {
-    switch (color) {
-      case "blue":
-        return {
-          bg: "bg-blue-50",
-          border: "border-blue-200",
-          icon: "text-blue-600",
-          button: "bg-blue-600 hover:bg-blue-700",
-        };
-      case "purple":
-        return {
-          bg: "bg-purple-50",
-          border: "border-purple-200",
-          icon: "text-purple-600",
-          button: "bg-purple-600 hover:bg-purple-700",
-        };
-      case "orange":
-        return {
-          bg: "bg-orange-50",
-          border: "border-orange-200",
-          icon: "text-orange-600",
-          button: "bg-orange-600 hover:bg-orange-700",
-        };
-      default:
-        return {
-          bg: "bg-gray-50",
-          border: "border-gray-200",
-          icon: "text-gray-600",
-          button: "bg-gray-600 hover:bg-gray-700",
-        };
+    getPlans();
+    getUser();
+  }, []);
+
+  const buyPlan = async (id: number) => {
+    const token = localStorage.getItem("token");
+    const order = {
+      tariff_id: id,
+    };
+
+    try {
+      const req = await fetch("https://mlm-backend.pixl.uz/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(order),
+      });
+
+      if (req.ok) {
+        const res = await req.json();
+        alert("Sotib olindi!");
+      } else {
+        const errorText = await req.text();
+        console.error("Xatolik:", errorText);
+        alert("Xatolik: " + errorText);
+      }
+    } catch (error) {
+      console.error("Buy plan error:", error);
+      alert("Serverda xatolik yuz berdi.");
     }
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-            {t("plans.choosePlan")}
-          </h1>
-          <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            {t("plans.choosePlanDescription")}
-          </p>
-        </div>
+    <div className="space-y-6 p-4">
+      <div className="text-center mb-6">
+        <h1 className="text-3xl font-bold">{t("plans.choosePlan")}</h1>
+        <p className="text-gray-600">{t("plans.choosePlanDescription")}</p>
       </div>
 
-      {/* Current Plan Info */}
-      {user?.currentPlan && (
-        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900 dark:to-indigo-900 rounded-xl border border-blue-200 dark:border-blue-700 p-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-                <Crown className="text-white" size={20} />
-              </div>
-              <div>
-                <h3 className="font-semibold text-blue-900 dark:text-white">
-                  {t("plans.currentPlan")}
-                </h3>
-                <p className="text-blue-700 dark:text-blue-300">
-                  {user.currentPlan}
-                </p>
-              </div>
-            </div>
-            <div className="text-right">
-              <p className="text-sm text-blue-600 dark:text-blue-300">
-                {t("plans.expiresOn")}
-              </p>
-              <p className="font-semibold text-blue-900 dark:text-white">
-                {new Date(user.planExpiry).toLocaleDateString()}
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Plans Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {plans.map((plan) => {
-          const Icon = plan.icon;
-          const colors = getColorClasses(plan.color);
-          const isCurrentPlan =
-            user?.currentPlan.toLowerCase() === plan.name.toLowerCase();
+        {plans.map((plan) => (
+          <div
+            key={plan.id}
+            className="w-full overflow-hidden min-h-[500px] border-2 border-blue-700 rounded-lg bg-white"
+          >
+            <img
+              className="w-full h-60 object-cover mb-3"
+              src={plan.photo_url}
+              alt="Plan"
+            />
+            <div className="p-4 flex flex-col gap-2">
+              <p className="flex items-center gap-2 text-2xl mb-2">
+                <b>DailyProfit:</b> {plan.dailyProfit}
+                <CoinsIcon className="text-yellow-400" />
+              </p>
+              <p className="flex items-center gap-2">
+                <b>Coin:</b> {plan.coin}
+                <Coins className="text-yellow-400" />
+              </p>
+              <p className="flex items-center gap-2">
+                <b>Referral bonus:</b> {plan.referral_bonus}
+                <Coins className="text-yellow-400" />
+              </p>
+              <p className="flex items-center gap-2">
+                <b>Term:</b> {plan.term} days
+                <Calendar className="text-red-700 w-4 h-4" />
+              </p>
+              <p className="flex items-center gap-2">
+                <b>Created:</b>{" "}
+                {new Date(plan.createdAt).toLocaleDateString("uz-UZ")}
+              </p>
 
-          return (
-            <div
-              key={plan.id}
-              className={`relative bg-white dark:bg-gray-900 rounded-xl shadow-sm border-2 p-6 transition-all hover:shadow-md ${
-                plan.popular
-                  ? "border-purple-200 dark:border-purple-500 ring-2 ring-purple-100 dark:ring-purple-400/30"
-                  : "border-gray-200 dark:border-gray-700"
-              }`}
-            >
-              {plan.popular && (
-                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                  <span className="bg-purple-600 text-white px-3 py-1 rounded-full text-xs font-medium">
-                    {t("plans.popular")}
-                  </span>
+              {plan.translations?.map((t) => (
+                <div key={t.language} className="text-sm border-t pt-2 mt-2">
+                  <p className="flex items-center gap-1">
+                    <b>{t.language.toUpperCase()}:</b>
+                    <LanguagesIcon className="w-4 h-4" />
+                  </p>
+                  <p><b>Name:</b> {t.name}</p>
+                  <p><b>Description:</b> {t.description}</p>
+                  <p><b>Features:</b> {t.features}</p>
+                  <p><b>Long Description:</b> {t.longDescription}</p>
+                  <p><b>Usage:</b> {t.usage}</p>
                 </div>
-              )}
-
-              <div className="text-center mb-6">
-                <div
-                  className={`w-12 h-12 ${colors.bg} rounded-lg flex items-center justify-center mx-auto mb-4`}
-                >
-                  <Icon className={colors.icon} size={24} />
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-                  {plan.name}
-                </h3>
-                <div className="mb-4">
-                  <span className="text-3xl font-bold text-gray-900 dark:text-white">
-                    ${plan.price}
-                  </span>
-                  <span className="text-gray-500 dark:text-gray-300">
-                    /{t("plans.monthly")}
-                  </span>
-                </div>
-              </div>
-
-              <ul className="space-y-3 mb-6">
-                {plan.features.map((feature, index) => (
-                  <li key={index} className="flex items-start space-x-3">
-                    <Check
-                      className="text-green-500 flex-shrink-0 mt-0.5"
-                      size={16}
-                    />
-                    <span className="text-sm text-gray-700 dark:text-gray-300">
-                      {feature}
-                    </span>
-                  </li>
-                ))}
-              </ul>
+              ))}
 
               <button
-                onClick={() => handleSelectPlan(plan.id)}
-                disabled={isCurrentPlan}
-                className={`w-full py-3 px-4 rounded-lg font-semibold text-white transition-colors ${
-                  isCurrentPlan
-                    ? "bg-gray-400 dark:bg-gray-600 cursor-not-allowed"
-                    : colors.button
-                }`}
+                onClick={() => buyPlan(plan.id)}
+                className="w-full hover:bg-blue-700 hover:text-white border py-2 rounded-xl mt-4"
               >
-                {isCurrentPlan ? t("plans.currentPlan") : t("plans.selectPlan")}
+                {t("plans.selectPlan")}
               </button>
             </div>
-          );
-        })}
-      </div>
-
-      {/* Payment Integration Notice */}
-      <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
-        <div className="flex items-start space-x-3">
-          <CreditCard className="text-blue-600 flex-shrink-0 mt-1" size={20} />
-          <div>
-            <h3 className="font-medium text-gray-900 dark:text-white mb-2">
-              {t("plans.securePayment")}
-            </h3>
-            <p className="text-sm text-gray-600 dark:text-gray-300">
-              {t("plans.securePaymentDescription")}
-            </p>
           </div>
-        </div>
-      </div>
-
-      {/* FAQ Section */}
-      <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-          {t("plans.faq.title")}
-        </h3>
-        <div className="space-y-4">
-          <div>
-            <h4 className="font-medium text-gray-900 dark:text-white">
-              {t("plans.faq.changePlan")}
-            </h4>
-            <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
-              {t("plans.faq.changePlanAnswer")}
-            </p>
-          </div>
-          <div>
-            <h4 className="font-medium text-gray-900 dark:text-white">
-              {t("plans.faq.cancelSubscription")}
-            </h4>
-            <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
-              {t("plans.faq.cancelSubscriptionAnswer")}
-            </p>
-          </div>
-          <div>
-            <h4 className="font-medium text-gray-900 dark:text-white">
-              {t("plans.faq.setupFees")}
-            </h4>
-            <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
-              {t("plans.faq.setupFeesAnswer")}
-            </p>
-          </div>
-        </div>
+        ))}
       </div>
     </div>
   );

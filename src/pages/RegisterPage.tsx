@@ -1,26 +1,52 @@
-import React, { useState } from "react";
-import { Link, Navigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Mail, Lock, Eye, EyeOff, Globe, User } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff, Globe, User, MailIcon } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { useTheme } from "../contexts/ThemeContext";
-import LanguageSelector from "../components/LanguageSelector";
 
 const RegisterPage: React.FC = () => {
   const { t } = useTranslation();
-  const { user, register, loginWithGoogle, loginWithFacebook, isLoading } =
-    useAuth();
+  const { register, loginWithGoogle, loginWithFacebook, isLoading } = useAuth();
   const { isDarkMode } = useTheme();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  // const [referal, setReferal] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(120);
+  const [isExpired, setIsExpired] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
-  if (user) {
-    return <Navigate to="/dashboard" replace />;
-  }
+  useEffect(() => {
+    if (timeLeft <= 0) {
+      setIsExpired(true);
+      return;
+    }
+
+    const interval = setInterval(() => {
+      setTimeLeft((prev) => prev - 1);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [timeLeft]);
+
+  const formattedTime = `${Math.floor(timeLeft / 60)}:${(timeLeft % 60)
+    .toString()
+    .padStart(2, "0")}`;
+
+  const handleResend = () => {
+    setTimeLeft(120);
+    setIsExpired(false);
+    // Optionally, call an API to resend the verification email here
+  };
+
+  const referal = localStorage.getItem("referral_id");
+  console.log(referal);
+
+  console.log(name, email, password, referal);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,7 +54,21 @@ const RegisterPage: React.FC = () => {
       alert("Passwords do not match");
       return;
     }
-    await register(name, email, password);
+    try {
+      const response = await register(name, email, password, referal);
+      console.log(response.message);
+
+      if (response.message === "success") {
+        setShowModal(true);
+        console.log(1);
+      } else {
+        setShowModal(false);
+        console.log(2);
+      }
+    } catch (error) {
+      // Error handling is managed by the register function via toast
+      setShowModal(false);
+    }
   };
 
   const handleGoogleLogin = async () => {
@@ -42,10 +82,8 @@ const RegisterPage: React.FC = () => {
   return (
     <div className={`min-h-screen ${isDarkMode ? "dark" : ""}`}>
       <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex items-center justify-center p-4">
-        <div className="max-w-[550px]  w-full space-y-8">
-          {/* Register form */}
+        <div className="max-w-[550px] w-full space-y-8">
           <div className="bg-white w-full dark:bg-gray-800 rounded-2xl shadow-2xl p-8">
-            {/* Logo and header */}
             <div className="text-center mb-8">
               <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center mx-auto mb-4">
                 <Globe className="text-white" size={32} />
@@ -58,7 +96,6 @@ const RegisterPage: React.FC = () => {
               </p>
             </div>
 
-            {/* Register form */}
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -167,7 +204,6 @@ const RegisterPage: React.FC = () => {
               </button>
             </form>
 
-            {/* Divider */}
             <div className="mt-6 mb-6">
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
@@ -181,7 +217,6 @@ const RegisterPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Social login buttons */}
             <div className="space-y-3">
               <button
                 onClick={handleGoogleLogin}
@@ -229,7 +264,6 @@ const RegisterPage: React.FC = () => {
               </button>
             </div>
 
-            {/* Footer */}
             <div className="mt-6 text-center">
               <span className="text-sm text-gray-600 dark:text-gray-400">
                 Already have an account?{" "}
@@ -244,6 +278,43 @@ const RegisterPage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {showModal && (
+        <div className="fixed inset-0 bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 text-white w-full h-screen flex items-center justify-center">
+          <div className="w-[550px] h-[400px] bg-white text-black rounded-lg p-5 shadow-md flex flex-col items-center justify-center space-y-4">
+            <h1 className="text-3xl font-bold">Ro'yxatdan o'tish</h1>
+            <p className="text-lg">
+              Tasdiqlash kodi yuborildi. Qolgan vaqt: {formattedTime}
+            </p>
+            <button
+              onClick={() => setShowModal(false)}
+              className="w-52 h-10 rounded-md bg-gray-500/30 hover:bg-gray-600/50"
+            >
+              Ma'lumot qayta kiritish
+            </button>
+            <button
+              onClick={handleResend}
+              disabled={!isExpired}
+              className={`w-52 h-10 rounded ${
+                isExpired
+                  ? "bg-blue-600 text-white hover:bg-blue-700"
+                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
+              }`}
+            >
+              Qayta yuborish
+            </button>
+            <a
+              href="https://mail.google.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex gap-2 bg-blue-600 px-[39px] text-white rounded-md py-2 hover:bg-blue-700"
+            >
+              <MailIcon className="w-5" />
+              Emailga kirish
+            </a>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

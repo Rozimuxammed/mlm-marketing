@@ -1,180 +1,128 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Search, Star, Coins, ShoppingCart, Eye } from "lucide-react";
 import { useCart } from "../contexts/CartContext";
 
+interface PhotoUrl {
+  photo_url: string;
+}
+
+interface Translation {
+  language: string;
+  name: string;
+  description: string;
+  longDescription: string;
+  features: string;
+  usage: string;
+}
+
+interface Product {
+  id: number;
+  rating: number;
+  rewiev: number;
+  count: number;
+  coin: number;
+  photo_url: PhotoUrl[];
+  translations: Translation[];
+}
+
 const ProductsPage: React.FC = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const [products, setProducts] = useState<Product[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [loading, setLoading] = useState<boolean>(true);
   const { addToCart } = useCart();
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("all");
-  const [products, setProducts] = useState<any[]>([]);
+  const lang = i18n.language;
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const res = await fetch("https://mlm-backend.pixl.uz/products");
         const data = await res.json();
-        setProducts(data); // Agar data massiv bo'lsa
+        setProducts(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error("Mahsulotlarni olishda xatolik:", error);
+      } finally {
+        setLoading(false);
       }
     };
+
     fetchProducts();
   }, []);
 
-
-  const filteredProducts = products?.filter((product) => {
-    const matchesSearch =
-      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory =
-      selectedCategory === "all" || product.category === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
-
-  const handleAddToCart = (product: any) => {
-    addToCart({
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      coinPrice: product.coinPrice,
-      image: product.image,
-    });
+  const getTranslation = (product: Product) => {
+    return (
+      product.translations.find((t) => t.language === lang) ||
+      product.translations[0]
+    );
   };
 
+  if (loading) {
+    return <div className="text-center p-8">{t("loading")}</div>;
+  }
+
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-          {t("common.products")}
-        </h1>
-        <p className="text-gray-600 dark:text-gray-400">
-          Discover premium products and services to boost your marketing success
-        </p>
+    <div className="p-4 space-y-6">
+      <div className="text-center">
+        <h1 className="text-3xl font-bold">{t("products.title")}</h1>
+        <p className="text-gray-600">{t("products.subtitle")}</p>
       </div>
 
-      {/* Search and Filters */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-        <div className="flex flex-col lg:flex-row gap-4">
-          {/* Search */}
-          <div className="flex-1">
-            <div className="relative">
-              <Search
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                size={20}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        {products.map((product) => {
+          const translation = getTranslation(product);
+          return (
+            <div
+              key={product.id}
+              className="bg-white rounded-xl shadow-md overflow-hidden border"
+            >
+              <img
+                src={
+                  product.photo_url?.[0]?.photo_url ||
+                  "https://via.placeholder.com/400x200"
+                }
+                alt={translation?.name || "Product image"}
+                className="w-full h-52 object-cover"
               />
-              <input
-                type="text"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Search products..."
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* All Products */}
-      <div>
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
-          All Products ({filteredProducts.length})
-        </h2>
-
-        {filteredProducts.length === 0 ? (
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-12 text-center">
-            <div className="text-gray-400 dark:text-gray-500 mb-4">
-              <Search size={48} className="mx-auto" />
-            </div>
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-              No products found
-            </h3>
-            <p className="text-gray-600 dark:text-gray-400">
-              Try adjusting your search terms or filters
-            </p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {filteredProducts.map((product) => (
-              <div
-                key={product.id}
-                className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-md transition-shadow"
-              >
-                <div className="relative">
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="w-full h-40 object-cover"
-                  />
-                  {product.featured && (
-                    <div className="absolute top-2 left-2">
-                      <span className="bg-yellow-500 text-black px-2 py-1 rounded-full text-xs font-medium">
-                        Featured
-                      </span>
-                    </div>
-                  )}
+              <div className="p-4 space-y-2">
+                <h2 className="text-xl font-semibold">
+                  {translation?.name || "No name"}
+                </h2>
+                <p className="text-gray-600 text-sm line-clamp-2">
+                  {translation?.description || "No description"}
+                </p>
+                <div className="flex items-center gap-2 text-sm text-yellow-500">
+                  <Star className="w-4 h-4" />
+                  {product.rating}
+                  <span className="text-gray-400 ml-2">
+                    ({product.rewiev} {t("products.reviews")})
+                  </span>
                 </div>
-
-                <div className="p-4">
-                  <h3 className="text-md font-semibold text-gray-900 dark:text-white mb-2 line-clamp-2">
-                    {product.name}
-                  </h3>
-                  <p className="text-gray-600 dark:text-gray-400 text-sm mb-3 line-clamp-2">
-                    {product.description}
-                  </p>
-
-                  <div className="flex items-center mb-3">
-                    <div className="flex items-center">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className={`w-3 h-3 ${
-                            i < Math.floor(product.rating)
-                              ? "text-yellow-400 fill-current"
-                              : "text-gray-300 dark:text-gray-600"
-                          }`}
-                        />
-                      ))}
-                    </div>
-                    <span className="text-xs text-gray-600 dark:text-gray-400 ml-1">
-                      ({product.reviews})
-                    </span>
-                  </div>
-
-                  <div className="mb-3">
-                    <div className="text-md font-bold text-gray-900 dark:text-white">
-                      ${product.price}
-                    </div>
-                    <div className="flex items-center text-yellow-600 dark:text-yellow-400">
-                      <Coins size={14} className="mr-1" />
-                      <span className="text-xs">{product.coinPrice} coins</span>
-                    </div>
-                  </div>
-
-                  <div className="flex gap-2">
-                    <Link
-                      to={`/dashboard/products/${product.id}`}
-                      className="flex-1 flex items-center justify-center px-3 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors text-sm"
-                    >
-                      <Eye size={14} className="mr-1" />
-                      View
-                    </Link>
-                    <button
-                      onClick={() => handleAddToCart(product)}
-                      className="flex-1 flex items-center justify-center px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors text-sm"
-                    >
-                      <ShoppingCart size={14} className="mr-1" />
-                      Add
-                    </button>
-                  </div>
+                <div className="flex justify-between items-center">
+                  <span className="flex items-center gap-1 text-green-600 font-bold">
+                    <Coins className="w-4 h-4" />
+                    {product.coin}
+                  </span>
+                  <button
+                    onClick={() =>
+                      addToCart({
+                        id: product.id,
+                        name: translation?.name || "",
+                        description: translation?.description || "",
+                        coin: product.coin,
+                        image: product.photo_url?.[0]?.photo_url || null,
+                      })
+                    }
+                    className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition"
+                  >
+                    <ShoppingCart className="w-4 h-4 inline mr-1" />
+                    {t("products.addToCart")}
+                  </button>
                 </div>
               </div>
-            ))}
-          </div>
-        )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );
